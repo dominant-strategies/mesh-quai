@@ -37,7 +37,7 @@ RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 FROM golang-builder as geth-builder
 
 # VERSION: go-ethereum v.1.10.16
-RUN git clone https://github.com/ethereum/go-ethereum \
+RUN git clone https://github.com/dominant-strategies/go-quai \
   && cd go-ethereum \
   && git checkout 20356e57b119b4e70ce47665a71964434e15200d
 

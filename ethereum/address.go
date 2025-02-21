@@ -17,7 +17,7 @@ package ethereum
 import (
 	"log"
 
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/dominant-strategies/go-quai/common"
 )
 
 // ChecksumAddress ensures an Ethereum hex address

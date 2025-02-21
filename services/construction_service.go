@@ -24,9 +24,9 @@ import (
 	"github.com/dominant-strategies/mesh-quai/configuration"
 	"github.com/dominant-strategies/mesh-quai/ethereum"
 
-	"github.com/ethereum/go-ethereum/common"
-	ethTypes "github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/dominant-strategies/go-quai/common"
+	ethTypes "github.com/dominant-strategies/go-quai/core/types"
+	"github.com/dominant-strategies/go-quai/crypto"
 
 	"github.com/coinbase/rosetta-sdk-go/parser"
 	"github.com/coinbase/rosetta-sdk-go/types"

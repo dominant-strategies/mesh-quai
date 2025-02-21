@@ -18,7 +18,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"math/big"
 	"reflect"
@@ -26,16 +25,15 @@ import (
 	"testing"
 
 	mocks "github.com/dominant-strategies/mesh-quai/mocks/ethereum"
+	"github.com/ethereum/go-ethereum"
 
 	RosettaTypes "github.com/coinbase/rosetta-sdk-go/types"
+	"github.com/dominant-strategies/go-quai/common"
+	"github.com/dominant-strategies/go-quai/common/hexutil"
+	"github.com/dominant-strategies/go-quai/core/types"
+	"github.com/dominant-strategies/go-quai/p2p"
 	"github.com/dominant-strategies/go-quai/params"
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/eth/tracers"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/dominant-strategies/go-quai/rpc"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"golang.org/x/sync/semaphore"
@@ -1159,18 +1157,19 @@ func TestCall_InvalidMethod(t *testing.T) {
 	mockGraphQL.AssertExpectations(t)
 }
 
-func testTraceConfig() (*tracers.TraceConfig, error) {
-	loadedFile, err := ioutil.ReadFile("call_tracer.js")
-	if err != nil {
-		return nil, fmt.Errorf("%w: could not load tracer file", err)
-	}
+// TODO: Fix Tracer tests
+// func testTraceConfig() (*tracers.TraceConfig, error) {
+// 	loadedFile, err := ioutil.ReadFile("call_tracer.js")
+// 	if err != nil {
+// 		return nil, fmt.Errorf("%w: could not load tracer file", err)
+// 	}
 
-	loadedTracer := string(loadedFile)
-	return &tracers.TraceConfig{
-		Timeout: &tracerTimeout,
-		Tracer:  &loadedTracer,
-	}, nil
-}
+// 	loadedTracer := string(loadedFile)
+// 	return &tracers.TraceConfig{
+// 		Timeout: &tracerTimeout,
+// 		Tracer:  &loadedTracer,
+// 	}, nil
+// }
 
 func TestBlock_Current(t *testing.T) {
 	mockJSONRPC := &mocks.JSONRPC{}

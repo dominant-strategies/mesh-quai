@@ -19,7 +19,7 @@ import (
 
 	"github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/dominant-strategies/go-quai/params"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/dominant-strategies/go-quai/rpc"
 )
 
 const (

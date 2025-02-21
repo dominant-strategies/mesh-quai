@@ -6,9 +6,9 @@ import (
 	context "context"
 	big "math/big"
 
-	common "github.com/ethereum/go-ethereum/common"
+	common "github.com/dominant-strategies/go-quai/common"
 
-	coretypes "github.com/ethereum/go-ethereum/core/types"
+	coretypes "github.com/dominant-strategies/go-quai/core/types"
 
 	mock "github.com/stretchr/testify/mock"
 

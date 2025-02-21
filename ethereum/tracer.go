@@ -14,13 +14,6 @@
 
 package ethereum
 
-import (
-	"fmt"
-	"io/ioutil"
-
-	"github.com/ethereum/go-ethereum/eth/tracers"
-)
-
 // convert raw eth data from client to rosetta
 
 const (
@@ -31,15 +24,15 @@ var (
 	tracerTimeout = "120s"
 )
 
-func loadTraceConfig() (*tracers.TraceConfig, error) {
-	loadedFile, err := ioutil.ReadFile(tracerPath)
-	if err != nil {
-		return nil, fmt.Errorf("%w: could not load tracer file", err)
-	}
+// func loadTraceConfig() (*tracers.TraceConfig, error) {
+// 	loadedFile, err := ioutil.ReadFile(tracerPath)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("%w: could not load tracer file", err)
+// 	}
 
-	loadedTracer := string(loadedFile)
-	return &tracers.TraceConfig{
-		Timeout: &tracerTimeout,
-		Tracer:  &loadedTracer,
-	}, nil
-}
+// 	loadedTracer := string(loadedFile)
+// 	return &tracers.TraceConfig{
+// 		Timeout: &tracerTimeout,
+// 		Tracer:  &loadedTracer,
+// 	}, nil
+// }

@@ -26,17 +26,15 @@ import (
 	"time"
 
 	RosettaTypes "github.com/coinbase/rosetta-sdk-go/types"
+	"github.com/dominant-strategies/go-quai"
+	"github.com/dominant-strategies/go-quai/common"
+	"github.com/dominant-strategies/go-quai/common/hexutil"
+	"github.com/dominant-strategies/go-quai/core/types"
+	EthTypes "github.com/dominant-strategies/go-quai/core/types"
+	"github.com/dominant-strategies/go-quai/p2p"
 	"github.com/dominant-strategies/go-quai/params"
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/core/types"
-	EthTypes "github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/eth/tracers"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/dominant-strategies/go-quai/rlp"
+	"github.com/dominant-strategies/go-quai/rpc"
 	"golang.org/x/sync/semaphore"
 )
 
@@ -55,10 +53,10 @@ const (
 // idempotent manner. Client relies on the quai_*, debug_*, admin_*, and txpool_*
 // methods and on the graphql endpoint.
 //
-// Client borrows HEAVILY from https://github.com/ethereum/go-ethereum/tree/master/ethclient.
+// Client borrows HEAVILY from https://github.com/dominant-strategies/go-quai/tree/master/ethclient.
 type Client struct {
-	p  *params.ChainConfig
-	tc *tracers.TraceConfig
+	p *params.ChainConfig
+	// tc *tracers.TraceConfig
 
 	c JSONRPC
 	g GraphQL
@@ -77,10 +75,10 @@ func NewClient(url string, params *params.ChainConfig, skipAdminCalls bool) (*Cl
 		return nil, fmt.Errorf("%w: unable to dial node", err)
 	}
 
-	tc, err := loadTraceConfig()
-	if err != nil {
-		return nil, fmt.Errorf("%w: unable to load trace config", err)
-	}
+	// tc, err := loadTraceConfig()
+	// if err != nil {
+	// 	return nil, fmt.Errorf("%w: unable to load trace config", err)
+	// }
 
 	g, err := newGraphQLClient(url)
 	if err != nil {
@@ -1261,20 +1259,13 @@ func (ec *Client) populateTransaction(
 // for a given block height.
 //
 // Source:
-// https://github.com/ethereum/go-ethereum/blob/master/consensus/ethash/consensus.go#L646-L653
+// https://github.com/dominant-strategies/go-quai/blob/master/consensus/ethash/consensus.go#L646-L653
 func (ec *Client) miningReward(
 	currentBlock *big.Int,
 ) int64 {
-	blockReward := ethash.FrontierBlockReward.Int64()
-	if ec.p.IsByzantium(currentBlock) {
-		blockReward = ethash.ByzantiumBlockReward.Int64()
-	}
+	// TODO: Needs to be rewritten to take in workshares.
 
-	if ec.p.IsConstantinople(currentBlock) {
-		blockReward = ethash.ConstantinopleBlockReward.Int64()
-	}
-
-	return blockReward
+	return -1
 }
 
 func (ec *Client) blockRewardTransaction(
