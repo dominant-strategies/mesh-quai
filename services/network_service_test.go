@@ -18,9 +18,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/coinbase/rosetta-ethereum/configuration"
-	"github.com/coinbase/rosetta-ethereum/ethereum"
-	mocks "github.com/coinbase/rosetta-ethereum/mocks/services"
+	"github.com/dominant-strategies/mesh-quai/configuration"
+	"github.com/dominant-strategies/mesh-quai/ethereum"
+	mocks "github.com/dominant-strategies/mesh-quai/mocks/services"
 
 	"github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/stretchr/testify/assert"

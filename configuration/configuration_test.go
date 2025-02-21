@@ -19,7 +19,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/coinbase/rosetta-ethereum/ethereum"
+	"github.com/dominant-strategies/mesh-quai/ethereum"
 
 	"github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/dominant-strategies/go-quai/params"

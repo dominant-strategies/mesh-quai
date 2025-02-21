@@ -25,7 +25,7 @@ import (
 	"sort"
 	"testing"
 
-	mocks "github.com/coinbase/rosetta-ethereum/mocks/ethereum"
+	mocks "github.com/dominant-strategies/mesh-quai/mocks/ethereum"
 
 	RosettaTypes "github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/dominant-strategies/go-quai/params"

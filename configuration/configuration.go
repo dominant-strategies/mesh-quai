@@ -20,7 +20,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/coinbase/rosetta-ethereum/ethereum"
+	"github.com/dominant-strategies/mesh-quai/ethereum"
 
 	"github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/dominant-strategies/go-quai/params"
@@ -124,7 +124,7 @@ func LoadConfiguration() (*Configuration, error) {
 			Network:    ethereum.MainnetNetwork,
 		}
 		config.GenesisBlockIdentifier = ethereum.MainnetGenesisBlockIdentifier
-		config.Params = params.MainnetChainConfig
+		config.Params = params.ProgpowColosseumChainConfig
 		config.GoQuaiArguments = ethereum.MainnetGoQuaiArguments
 	case Orchard:
 		config.Network = &types.NetworkIdentifier{
@@ -132,7 +132,7 @@ func LoadConfiguration() (*Configuration, error) {
 			Network:    ethereum.OrchardNetwork,
 		}
 		config.GenesisBlockIdentifier = ethereum.OrchardGenesisBlockIdentifier
-		config.Params = params.OrchardChainConfig
+		config.Params = params.ProgpowOrchardChainConfig
 		config.GoQuaiArguments = ethereum.OrchardGoQuaiArguments
 	case Local:
 		config.Network = &types.NetworkIdentifier{
@@ -140,7 +140,7 @@ func LoadConfiguration() (*Configuration, error) {
 			Network:    ethereum.DevNetwork,
 		}
 		config.GenesisBlockIdentifier = nil
-		config.Params = params.AllCliqueProtocolChanges
+		config.Params = params.ProgpowLocalChainConfig
 		config.GoQuaiArguments = ethereum.LocalGoQuaiArguments
 	case "":
 		return nil, errors.New("NETWORK must be populated")

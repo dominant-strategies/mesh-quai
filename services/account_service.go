@@ -17,7 +17,7 @@ package services
 import (
 	"context"
 
-	"github.com/coinbase/rosetta-ethereum/configuration"
+	"github.com/dominant-strategies/mesh-quai/configuration"
 
 	"github.com/coinbase/rosetta-sdk-go/types"
 )
