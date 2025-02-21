@@ -59,7 +59,7 @@ func (s *ConstructionAPIService) ConstructionDerive(
 		return nil, wrapErr(ErrUnableToDecompressPubkey, err)
 	}
 
-	addr := crypto.PubkeyToAddress(*pubkey)
+	addr := crypto.PubkeyToAddress(*pubkey, location)
 	return &types.ConstructionDeriveResponse{
 		AccountIdentifier: &types.AccountIdentifier{
 			Address: addr.Hex(),
@@ -151,7 +151,7 @@ func (s *ConstructionAPIService) ConstructionMetadata(
 		return nil, wrapErr(ErrUnableToParseIntermediateResult, err)
 	}
 
-	nonce, err := s.client.PendingNonceAt(ctx, common.HexToAddress(input.From))
+	nonce, err := s.client.PendingNonceAt(ctx, common.HexToAddress(input.From, input.Location))
 	if err != nil {
 		return nil, wrapErr(ErrGeth, err)
 	}

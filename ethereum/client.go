@@ -26,15 +26,14 @@ import (
 	"time"
 
 	RosettaTypes "github.com/coinbase/rosetta-sdk-go/types"
-	"github.com/dominant-strategies/go-quai"
 	"github.com/dominant-strategies/go-quai/common"
 	"github.com/dominant-strategies/go-quai/common/hexutil"
 	"github.com/dominant-strategies/go-quai/core/types"
-	EthTypes "github.com/dominant-strategies/go-quai/core/types"
 	"github.com/dominant-strategies/go-quai/p2p"
 	"github.com/dominant-strategies/go-quai/params"
 	"github.com/dominant-strategies/go-quai/rlp"
 	"github.com/dominant-strategies/go-quai/rpc"
+	"github.com/ethereum/go-ethereum"
 	"golang.org/x/sync/semaphore"
 )
 
@@ -47,6 +46,10 @@ const (
 	// eip1559TxType is the EthTypes.Transaction.Type() value that indicates this transaction
 	// follows EIP-1559.
 	eip1559TxType = 2
+)
+
+var (
+	errNotFound error = errors.New("not found")
 )
 
 // Client allows for querying a set of specific Ethereum endpoints in an
@@ -85,7 +88,7 @@ func NewClient(url string, params *params.ChainConfig, skipAdminCalls bool) (*Cl
 		return nil, fmt.Errorf("%w: unable to create GraphQL client", err)
 	}
 
-	return &Client{params, tc, c, g, semaphore.NewWeighted(maxTraceConcurrency), skipAdminCalls}, nil
+	return &Client{params, c, g, semaphore.NewWeighted(maxTraceConcurrency), skipAdminCalls}, nil
 }
 
 // Close shuts down the RPC client connection.
@@ -130,7 +133,7 @@ func (ec *Client) Status(ctx context.Context) (
 
 	return &RosettaTypes.BlockIdentifier{
 			Hash:  header.Hash().Hex(),
-			Index: header.Number.Int64(),
+			Index: int64(header.NumberU64(common.ZONE_CTX)),
 		},
 		convertTime(header.Time),
 		syncStatus,
@@ -319,11 +322,11 @@ func (ec *Client) Block(
 
 // Header returns a block header from the current canonical chain. If number is
 // nil, the latest known header is returned.
-func (ec *Client) blockHeaderByNumber(ctx context.Context, number *big.Int) (*types.Header, error) {
-	var head *types.Header
+func (ec *Client) blockHeaderByNumber(ctx context.Context, number *big.Int) (*types.WorkObject, error) {
+	var head *types.WorkObject
 	err := ec.c.CallContext(ctx, &head, "quai_getBlockByNumber", toBlockNumArg(number), false)
 	if err == nil && head == nil {
-		return nil, ethereum.NotFound
+		return nil, errNotFound
 	}
 
 	return head, err
@@ -356,22 +359,22 @@ func (ec *Client) getUncles(
 	body *rpcBlock,
 ) ([]*types.Header, error) {
 	// Quick-verify transaction and uncle lists. This mostly helps with debugging the server.
-	if head.UncleHash == types.EmptyUncleHash && len(body.UncleHashes) > 0 {
+	if head.UncleHash() == types.EmptyUncleHash && len(body.UncleHashes) > 0 {
 		return nil, fmt.Errorf(
 			"server returned non-empty uncle list but block header indicates no uncles",
 		)
 	}
-	if head.UncleHash != types.EmptyUncleHash && len(body.UncleHashes) == 0 {
+	if head.UncleHash() != types.EmptyUncleHash && len(body.UncleHashes) == 0 {
 		return nil, fmt.Errorf(
 			"server returned empty uncle list but block header indicates uncles",
 		)
 	}
-	if head.TxHash == types.EmptyRootHash && len(body.Transactions) > 0 {
+	if head.TxHash() == types.EmptyRootHash && len(body.Transactions) > 0 {
 		return nil, fmt.Errorf(
 			"server returned non-empty transaction list but block header indicates no transactions",
 		)
 	}
-	if head.TxHash != types.EmptyRootHash && len(body.Transactions) == 0 {
+	if head.TxHash() != types.EmptyRootHash && len(body.Transactions) == 0 {
 		return nil, fmt.Errorf(
 			"server returned empty transaction list but block header indicates transactions",
 		)
@@ -413,7 +416,7 @@ func (ec *Client) getBlock(
 	blockMethod string,
 	args ...interface{},
 ) (
-	*types.Block,
+	*types.WorkObject,
 	[]*loadedTransaction,
 	error,
 ) {
@@ -426,7 +429,7 @@ func (ec *Client) getBlock(
 	}
 
 	// Decode header and transactions
-	var head types.Header
+	var head types.WorkObject
 	var body rpcBlock
 	if err := json.Unmarshal(raw, &head); err != nil {
 		return nil, nil, err
@@ -454,7 +457,7 @@ func (ec *Client) getBlock(
 	var traces []*rpcCall
 	var rawTraces []*rpcRawCall
 	var addTraces bool
-	if head.Number.Int64() != GenesisBlockIndex { // not possible to get traces at genesis
+	if int64(head.NumberU64(common.ZONE_CTX)) != GenesisBlockIndex { // not possible to get traces at genesis
 		addTraces = true
 		traces, rawTraces, err = ec.getBlockTraces(ctx, body.Hash)
 		if err != nil {

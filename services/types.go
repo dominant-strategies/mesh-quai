@@ -68,7 +68,8 @@ type Client interface {
 }
 
 type options struct {
-	From string `json:"from"`
+	From     string          `json:"from"`
+	Location common.Location `json:"location"`
 }
 
 type metadata struct {
