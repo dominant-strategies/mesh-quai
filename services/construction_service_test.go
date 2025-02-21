@@ -26,8 +26,8 @@ import (
 	mocks "github.com/coinbase/rosetta-ethereum/mocks/services"
 
 	"github.com/coinbase/rosetta-sdk-go/types"
+	"github.com/dominant-strategies/go-quai/params"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/params"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -59,7 +59,7 @@ func TestConstructionService(t *testing.T) {
 	cfg := &configuration.Configuration{
 		Mode:    configuration.Online,
 		Network: networkIdentifier,
-		Params:  params.RopstenChainConfig,
+		Params:  params.OrchardChainConfig,
 	}
 
 	mockClient := &mocks.Client{}

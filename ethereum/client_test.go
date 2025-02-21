@@ -28,13 +28,13 @@ import (
 	mocks "github.com/coinbase/rosetta-ethereum/mocks/ethereum"
 
 	RosettaTypes "github.com/coinbase/rosetta-sdk-go/types"
+	"github.com/dominant-strategies/go-quai/params"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/eth/tracers"
 	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/params"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -56,7 +56,7 @@ func TestStatus_NotReady(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"latest",
 		false,
 	).Return(
@@ -89,7 +89,7 @@ func TestStatus_NotSyncing(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"latest",
 		false,
 	).Return(
@@ -110,7 +110,7 @@ func TestStatus_NotSyncing(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_syncing",
+		"quai_syncing",
 	).Return(
 		nil,
 	).Run(
@@ -210,7 +210,7 @@ func TestStatus_NotSyncing_SkipAdminCalls(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"latest",
 		false,
 	).Return(
@@ -231,7 +231,7 @@ func TestStatus_NotSyncing_SkipAdminCalls(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_syncing",
+		"quai_syncing",
 	).Return(
 		nil,
 	).Run(
@@ -286,7 +286,7 @@ func TestStatus_Syncing(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"latest",
 		false,
 	).Return(
@@ -307,7 +307,7 @@ func TestStatus_Syncing(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_syncing",
+		"quai_syncing",
 	).Return(
 		nil,
 	).Run(
@@ -412,7 +412,7 @@ func TestStatus_Syncing_SkipAdminCalls(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"latest",
 		false,
 	).Return(
@@ -433,7 +433,7 @@ func TestStatus_Syncing_SkipAdminCalls(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_syncing",
+		"quai_syncing",
 	).Return(
 		nil,
 	).Run(
@@ -786,7 +786,7 @@ func TestCall_GetBlockByNumber(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"0x2af0",
 		false,
 	).Return(
@@ -811,7 +811,7 @@ func TestCall_GetBlockByNumber(t *testing.T) {
 	resp, err := c.Call(
 		ctx,
 		&RosettaTypes.CallRequest{
-			Method: "eth_getBlockByNumber",
+			Method: "quai_getBlockByNumber",
 			Parameters: map[string]interface{}{
 				"index":                    RosettaTypes.Int64(10992),
 				"show_transaction_details": false,
@@ -842,7 +842,7 @@ func TestCall_GetBlockByNumber_InvalidArgs(t *testing.T) {
 	resp, err := c.Call(
 		ctx,
 		&RosettaTypes.CallRequest{
-			Method: "eth_getBlockByNumber",
+			Method: "quai_getBlockByNumber",
 			Parameters: map[string]interface{}{
 				"index":                    "a string",
 				"show_transaction_details": false,
@@ -872,7 +872,7 @@ func TestCall_GetTransactionReceipt(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getTransactionReceipt",
+		"quai_getTransactionReceipt",
 		common.HexToHash("0xb358c6958b1cab722752939cbb92e3fec6b6023de360305910ce80c56c3dad9d"),
 	).Return(
 		nil,
@@ -893,7 +893,7 @@ func TestCall_GetTransactionReceipt(t *testing.T) {
 	resp, err := c.Call(
 		ctx,
 		&RosettaTypes.CallRequest{
-			Method: "eth_getTransactionReceipt",
+			Method: "quai_getTransactionReceipt",
 			Parameters: map[string]interface{}{
 				"tx_hash": "0xb358c6958b1cab722752939cbb92e3fec6b6023de360305910ce80c56c3dad9d",
 			},
@@ -935,7 +935,7 @@ func TestCall_GetTransactionReceipt_InvalidArgs(t *testing.T) {
 	resp, err := c.Call(
 		ctx,
 		&RosettaTypes.CallRequest{
-			Method: "eth_getTransactionReceipt",
+			Method: "quai_getTransactionReceipt",
 		},
 	)
 	assert.Nil(t, resp)
@@ -961,7 +961,7 @@ func TestCall_Call(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_call",
+		"quai_call",
 		map[string]string{
 			"to":   "0xB5E5D0F8C0cbA267CD3D7035d6AdC8eBA7Df7Cdd",
 			"data": "0x70a08231000000000000000000000000b5e5d0f8c0cba267cd3d7035d6adc8eba7df7cdd",
@@ -992,7 +992,7 @@ func TestCall_Call(t *testing.T) {
 	resp, err := c.Call(
 		ctx,
 		&RosettaTypes.CallRequest{
-			Method: "eth_call",
+			Method: "quai_call",
 			Parameters: map[string]interface{}{
 				"index": 11408349,
 				"to":    "0xB5E5D0F8C0cbA267CD3D7035d6AdC8eBA7Df7Cdd",
@@ -1024,7 +1024,7 @@ func TestCall_Call_InvalidArgs(t *testing.T) {
 	resp, err := c.Call(
 		ctx,
 		&RosettaTypes.CallRequest{
-			Method: "eth_call",
+			Method: "quai_call",
 			Parameters: map[string]interface{}{
 				"index": 11408349,
 				"Hash":  "0x73fc065bc04f16c98247f8ec1e990f581ec58723bcd8059de85f93ab18706448",
@@ -1056,7 +1056,7 @@ func TestCall_EstimateGas(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_estimateGas",
+		"quai_estimateGas",
 		map[string]string{
 			"from": "0xE550f300E477C60CE7e7172d12e5a27e9379D2e3",
 			"to":   "0xaD6D458402F60fD3Bd25163575031ACDce07538D",
@@ -1088,7 +1088,7 @@ func TestCall_EstimateGas(t *testing.T) {
 	resp, err := c.Call(
 		ctx,
 		&RosettaTypes.CallRequest{
-			Method: "eth_estimateGas",
+			Method: "quai_estimateGas",
 			Parameters: map[string]interface{}{
 				"from": "0xE550f300E477C60CE7e7172d12e5a27e9379D2e3",
 				"to":   "0xaD6D458402F60fD3Bd25163575031ACDce07538D",
@@ -1121,7 +1121,7 @@ func TestCall_EstimateGas_InvalidArgs(t *testing.T) {
 	resp, err := c.Call(
 		ctx,
 		&RosettaTypes.CallRequest{
-			Method: "eth_estimateGas",
+			Method: "quai_estimateGas",
 			Parameters: map[string]interface{}{
 				"From": "0xE550f300E477C60CE7e7172d12e5a27e9379D2e3",
 				"to":   "0xaD6D458402F60fD3Bd25163575031ACDce07538D",
@@ -1182,7 +1182,7 @@ func TestBlock_Current(t *testing.T) {
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
 		tc:             tc,
-		p:              params.RopstenChainConfig,
+		p:              params.OrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1191,7 +1191,7 @@ func TestBlock_Current(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"latest",
 		true,
 	).Return(
@@ -1254,7 +1254,7 @@ func TestBlock_Hash(t *testing.T) {
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
 		tc:             tc,
-		p:              params.RopstenChainConfig,
+		p:              params.OrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1263,7 +1263,7 @@ func TestBlock_Hash(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByHash",
+		"quai_getBlockByHash",
 		"0xba9ded5ca1ec9adb9451bf062c9de309d9552fa0f0254a7b982d3daf7ae436ae",
 		true,
 	).Return(
@@ -1330,7 +1330,7 @@ func TestBlock_Index(t *testing.T) {
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
 		tc:             tc,
-		p:              params.RopstenChainConfig,
+		p:              params.OrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1339,7 +1339,7 @@ func TestBlock_Index(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"0x2af0",
 		true,
 	).Return(
@@ -1404,7 +1404,7 @@ func TestBlock_FirstBlock(t *testing.T) {
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
 		tc:             tc,
-		p:              params.RopstenChainConfig,
+		p:              params.OrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1413,7 +1413,7 @@ func TestBlock_FirstBlock(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"0x0",
 		true,
 	).Return(
@@ -1487,7 +1487,7 @@ func TestTransaction_Hash(t *testing.T) {
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
 		tc:             tc,
-		p:              params.RopstenChainConfig,
+		p:              params.OrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1496,7 +1496,7 @@ func TestTransaction_Hash(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getTransactionByHash",
+		"quai_getTransactionByHash",
 		txHash,
 	).Return(
 		nil,
@@ -1517,7 +1517,7 @@ func TestTransaction_Hash(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByHash",
+		"quai_getBlockByHash",
 		blockHash,
 		false,
 	).Return(
@@ -1541,7 +1541,7 @@ func TestTransaction_Hash(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getTransactionReceipt",
+		"quai_getTransactionReceipt",
 		common.HexToHash(txHash),
 	).Return(
 		nil,
@@ -1619,7 +1619,7 @@ func TestBlock_10994(t *testing.T) {
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
 		tc:             tc,
-		p:              params.RopstenChainConfig,
+		p:              params.OrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1628,7 +1628,7 @@ func TestBlock_10994(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"0x2af2",
 		true,
 	).Return(
@@ -1725,7 +1725,7 @@ func TestBlock_10991(t *testing.T) {
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
 		tc:             tc,
-		p:              params.RopstenChainConfig,
+		p:              params.OrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1734,7 +1734,7 @@ func TestBlock_10991(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"0x2aef",
 		true,
 	).Return(
@@ -1830,7 +1830,7 @@ func TestBlock_239782(t *testing.T) {
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
 		tc:             tc,
-		p:              params.RopstenChainConfig,
+		p:              params.OrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1839,7 +1839,7 @@ func TestBlock_239782(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"0x3a8a6",
 		true,
 	).Return(
@@ -1936,7 +1936,7 @@ func TestBlock_363415(t *testing.T) {
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
 		tc:             tc,
-		p:              params.RopstenChainConfig,
+		p:              params.OrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1945,7 +1945,7 @@ func TestBlock_363415(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"0x58b97",
 		true,
 	).Return(
@@ -2048,7 +2048,7 @@ func TestBlock_363753(t *testing.T) {
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
 		tc:             tc,
-		p:              params.RopstenChainConfig,
+		p:              params.OrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -2057,7 +2057,7 @@ func TestBlock_363753(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"0x58ce9",
 		true,
 	).Return(
@@ -2160,7 +2160,7 @@ func TestBlock_468179(t *testing.T) {
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
 		tc:             tc,
-		p:              params.RopstenChainConfig,
+		p:              params.OrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -2169,7 +2169,7 @@ func TestBlock_468179(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"0x724d3",
 		true,
 	).Return(
@@ -2272,7 +2272,7 @@ func TestBlock_363366(t *testing.T) {
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
 		tc:             tc,
-		p:              params.RopstenChainConfig,
+		p:              params.OrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -2281,7 +2281,7 @@ func TestBlock_363366(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"0x58b66",
 		true,
 	).Return(
@@ -2385,7 +2385,7 @@ func TestBlock_468194(t *testing.T) {
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
 		tc:             tc,
-		p:              params.RopstenChainConfig,
+		p:              params.OrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -2394,7 +2394,7 @@ func TestBlock_468194(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"0x724e2",
 		true,
 	).Return(
@@ -2501,7 +2501,7 @@ func TestBlock_13998626(t *testing.T) {
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
 		tc:             tc,
-		p:              params.RopstenChainConfig,
+		p:              params.OrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -2510,7 +2510,7 @@ func TestBlock_13998626(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getBlockByNumber",
+		"quai_getBlockByNumber",
 		"0xd59a22",
 		true,
 	).Return(
@@ -2619,7 +2619,7 @@ func TestPendingNonceAt(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_getTransactionCount",
+		"quai_getTransactionCount",
 		common.HexToAddress("0xfFC614eE978630D7fB0C06758DeB580c152154d3"),
 		"pending",
 	).Return(
@@ -2657,7 +2657,7 @@ func TestSuggestGasPrice(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_gasPrice",
+		"quai_gasPrice",
 	).Return(
 		nil,
 	).Run(
@@ -2692,7 +2692,7 @@ func TestSendTransaction(t *testing.T) {
 		"CallContext",
 		ctx,
 		mock.Anything,
-		"eth_sendRawTransaction",
+		"quai_sendRawTransaction",
 		"0xf86a80843b9aca00825208941ff502f9fe838cd772874cb67d0d96b93fd1d6d78725d4b6199a415d8029a01d110bf9fd468f7d00b3ce530832e99818835f45e9b08c66f8d9722264bb36c7a02711f47ec99f9ac585840daef41b7118b52ec72f02fcb30d874d36b10b668b59", // nolint
 	).Return(
 		nil,

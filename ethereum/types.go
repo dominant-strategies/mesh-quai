@@ -16,10 +16,9 @@ package ethereum
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/coinbase/rosetta-sdk-go/types"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/dominant-strategies/go-quai/params"
 	"github.com/ethereum/go-ethereum/rpc"
 )
 
@@ -34,17 +33,9 @@ const (
 	// in MainnetNetworkIdentifier.
 	MainnetNetwork string = "Mainnet"
 
-	// RopstenNetwork is the value of the network
-	// in RopstenNetworkIdentifier.
-	RopstenNetwork string = "Ropsten"
-
-	// RinkebyNetwork is the value of the network
-	// in RinkebyNetworkNetworkIdentifier.
-	RinkebyNetwork string = "Rinkeby"
-
-	// GoerliNetwork is the value of the network
-	// in GoerliNetworkNetworkIdentifier.
-	GoerliNetwork string = "Goerli"
+	// OrchardNetwork is the value of the network
+	// in OrchardNetworkIdentifier.
+	OrchardNetwork string = "Orchard"
 
 	// DevNetwork is the value of the network
 	// in DevNetworkNetworkIdentifier.
@@ -52,7 +43,7 @@ const (
 
 	// Symbol is the symbol value
 	// used in Currency.
-	Symbol = "ETH"
+	Symbol = "QUAI"
 
 	// Decimals is the decimals value
 	// used in Currency.
@@ -123,51 +114,31 @@ const (
 	// of a transfer.
 	TransferGasLimit = int64(21000) //nolint:gomnd
 
-	// MainnetGethArguments are the arguments to start a mainnet geth instance.
-	MainnetGethArguments = `--config=/app/ethereum/geth.toml --gcmode=archive --graphql`
+	// MainnetGoQuaiArguments are the arguments to start a mainnet geth instance.
+	MainnetGoQuaiArguments = `--config=/app/go-quai/config.toml`
 
 	// IncludeMempoolCoins does not apply to rosetta-ethereum as it is not UTXO-based.
 	IncludeMempoolCoins = false
 )
 
 var (
-	// RopstenGethArguments are the arguments to start a ropsten geth instance.
-	RopstenGethArguments = fmt.Sprintf("%s --ropsten", MainnetGethArguments)
+	// OrchardGoQuaiArguments are the arguments to start a ropsten geth instance.
+	OrchardGoQuaiArguments = "--node.env orchard" + MainnetGoQuaiArguments
 
-	// RinkebyGethArguments are the arguments to start a rinkeby geth instance.
-	RinkebyGethArguments = fmt.Sprintf("%s --rinkeby", MainnetGethArguments)
-
-	// GoerliGethArguments are the arguments to start a ropsten geth instance.
-	GoerliGethArguments = fmt.Sprintf("%s --goerli", MainnetGethArguments)
-
-	// DevGethArguments are the arguments to start a dev geth instance.
-	DevGethArguments = fmt.Sprintf("%s --dev", MainnetGethArguments)
+	// LocalGoQuaiArguments are the arguments to start a dev geth instance.
+	LocalGoQuaiArguments = "--node.env local" + MainnetGoQuaiArguments
 
 	// MainnetGenesisBlockIdentifier is the *types.BlockIdentifier
 	// of the mainnet genesis block.
 	MainnetGenesisBlockIdentifier = &types.BlockIdentifier{
-		Hash:  params.MainnetGenesisHash.Hex(),
+		Hash:  params.ProgpowColosseumGenesisHash.Hex(),
 		Index: GenesisBlockIndex,
 	}
 
 	// RopstenGenesisBlockIdentifier is the *types.BlockIdentifier
 	// of the Ropsten genesis block.
-	RopstenGenesisBlockIdentifier = &types.BlockIdentifier{
-		Hash:  params.RopstenGenesisHash.Hex(),
-		Index: GenesisBlockIndex,
-	}
-
-	// RinkebyGenesisBlockIdentifier is the *types.BlockIdentifier
-	// of the Ropsten genesis block.
-	RinkebyGenesisBlockIdentifier = &types.BlockIdentifier{
-		Hash:  params.RinkebyGenesisHash.Hex(),
-		Index: GenesisBlockIndex,
-	}
-
-	// GoerliGenesisBlockIdentifier is the *types.BlockIdentifier
-	// of the Goerli genesis block.
-	GoerliGenesisBlockIdentifier = &types.BlockIdentifier{
-		Hash:  params.GoerliGenesisHash.Hex(),
+	OrchardGenesisBlockIdentifier = &types.BlockIdentifier{
+		Hash:  params.ProgpowOrchardGenesisHash.Hex(),
 		Index: GenesisBlockIndex,
 	}
 
@@ -207,10 +178,10 @@ var (
 
 	// CallMethods are all supported call methods.
 	CallMethods = []string{
-		"eth_getBlockByNumber",
-		"eth_getTransactionReceipt",
-		"eth_call",
-		"eth_estimateGas",
+		"quai_getBlockByNumber",
+		"quai_getTransactionReceipt",
+		"quai_call",
+		"quai_estimateGas",
 	}
 )
 

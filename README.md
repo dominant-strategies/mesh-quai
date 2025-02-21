@@ -175,19 +175,19 @@ make build-local
 
 #### Optional Arguments
 
-**`GETH`**
+**`GO_QUAI`**
 **Type:** `String`
 **Options:** A node URL
 **Default:** None
 
-`GETH` points to a remote `geth` node instead of initializing one
+`GO_QUAI` points to a remote `GO_QUAI` node instead of initializing one
 
-**`SKIP_GETH_ADMIN`**
+**`SKIP_GO_QUAI_ADMIN`**
 **Type:** `Boolean`
 **Options:** `TRUE`, `FALSE`
 **Default:** `FALSE`
 
-`SKIP_GETH_ADMIN` instructs Mesh to not use the `geth` `admin` RPC calls. This is typically disabled by hosted blockchain node services.
+`SKIP_GO_QUAI_ADMIN` instructs Mesh to not use the `geth` `admin` RPC calls. This is typically disabled by hosted blockchain node services.
 <!-- h3 Run Docker -->
 ### Run Docker
 

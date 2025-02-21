@@ -85,14 +85,14 @@ func runRunCmd(cmd *cobra.Command, args []string) error {
 
 	var client *ethereum.Client
 	if cfg.Mode == configuration.Online {
-		if !cfg.RemoteGeth {
+		if !cfg.RemoteGoQuai {
 			g.Go(func() error {
-				return ethereum.StartGeth(ctx, cfg.GethArguments, g)
+				return ethereum.StartGeth(ctx, cfg.GoQuaiArguments, g)
 			})
 		}
 
 		var err error
-		client, err = ethereum.NewClient(cfg.GethURL, cfg.Params, cfg.SkipGethAdmin)
+		client, err = ethereum.NewClient(cfg.GoQuaiURL, cfg.Params, cfg.SkipGoQuaiAdmin)
 		if err != nil {
 			return fmt.Errorf("%w: cannot initialize ethereum client", err)
 		}

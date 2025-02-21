@@ -26,6 +26,7 @@ import (
 	"time"
 
 	RosettaTypes "github.com/coinbase/rosetta-sdk-go/types"
+	"github.com/dominant-strategies/go-quai/params"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -34,7 +35,6 @@ import (
 	EthTypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/eth/tracers"
 	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/params"
 	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/ethereum/go-ethereum/rpc"
 	"golang.org/x/sync/semaphore"
@@ -52,7 +52,7 @@ const (
 )
 
 // Client allows for querying a set of specific Ethereum endpoints in an
-// idempotent manner. Client relies on the eth_*, debug_*, admin_*, and txpool_*
+// idempotent manner. Client relies on the quai_*, debug_*, admin_*, and txpool_*
 // methods and on the graphql endpoint.
 //
 // Client borrows HEAVILY from https://github.com/ethereum/go-ethereum/tree/master/ethclient.
@@ -144,7 +144,7 @@ func (ec *Client) Status(ctx context.Context) (
 // This is the nonce that should be used for the next transaction.
 func (ec *Client) PendingNonceAt(ctx context.Context, account common.Address) (uint64, error) {
 	var result hexutil.Uint64
-	err := ec.c.CallContext(ctx, &result, "eth_getTransactionCount", account, "pending")
+	err := ec.c.CallContext(ctx, &result, "quai_getTransactionCount", account, "pending")
 	return uint64(result), err
 }
 
@@ -152,7 +152,7 @@ func (ec *Client) PendingNonceAt(ctx context.Context, account common.Address) (u
 // execution of a transaction.
 func (ec *Client) SuggestGasPrice(ctx context.Context) (*big.Int, error) {
 	var hex hexutil.Big
-	if err := ec.c.CallContext(ctx, &hex, "eth_gasPrice"); err != nil {
+	if err := ec.c.CallContext(ctx, &hex, "quai_gasPrice"); err != nil {
 		return nil, err
 	}
 	return (*big.Int)(&hex), nil
@@ -196,7 +196,7 @@ func (ec *Client) SendTransaction(ctx context.Context, tx *types.Transaction) er
 	if err != nil {
 		return err
 	}
-	return ec.c.CallContext(ctx, nil, "eth_sendRawTransaction", hexutil.Encode(data))
+	return ec.c.CallContext(ctx, nil, "quai_sendRawTransaction", hexutil.Encode(data))
 }
 
 func toBlockNumArg(number *big.Int) string {
@@ -222,7 +222,7 @@ func (ec *Client) Transaction(
 	}
 
 	var raw json.RawMessage
-	err := ec.c.CallContext(ctx, &raw, "eth_getTransactionByHash", transactionIdentifier.Hash)
+	err := ec.c.CallContext(ctx, &raw, "quai_getTransactionByHash", transactionIdentifier.Hash)
 	if err != nil {
 		return nil, fmt.Errorf("%w: transaction fetch failed", err)
 	} else if len(raw) == 0 {
@@ -303,27 +303,27 @@ func (ec *Client) Block(
 ) (*RosettaTypes.Block, error) {
 	if blockIdentifier != nil {
 		if blockIdentifier.Hash != nil {
-			return ec.getParsedBlock(ctx, "eth_getBlockByHash", *blockIdentifier.Hash, true)
+			return ec.getParsedBlock(ctx, "quai_getBlockByHash", *blockIdentifier.Hash, true)
 		}
 
 		if blockIdentifier.Index != nil {
 			return ec.getParsedBlock(
 				ctx,
-				"eth_getBlockByNumber",
+				"quai_getBlockByNumber",
 				toBlockNumArg(big.NewInt(*blockIdentifier.Index)),
 				true,
 			)
 		}
 	}
 
-	return ec.getParsedBlock(ctx, "eth_getBlockByNumber", toBlockNumArg(nil), true)
+	return ec.getParsedBlock(ctx, "quai_getBlockByNumber", toBlockNumArg(nil), true)
 }
 
 // Header returns a block header from the current canonical chain. If number is
 // nil, the latest known header is returned.
 func (ec *Client) blockHeaderByNumber(ctx context.Context, number *big.Int) (*types.Header, error) {
 	var head *types.Header
-	err := ec.c.CallContext(ctx, &head, "eth_getBlockByNumber", toBlockNumArg(number), false)
+	err := ec.c.CallContext(ctx, &head, "quai_getBlockByNumber", toBlockNumArg(number), false)
 	if err == nil && head == nil {
 		return nil, ethereum.NotFound
 	}
@@ -338,7 +338,7 @@ func (ec *Client) blockHeaderByHash(ctx context.Context, hash string) (*types.He
 	if hash == "" {
 		return nil, errors.New("hash is empty")
 	}
-	err := ec.c.CallContext(ctx, &head, "eth_getBlockByHash", hash, false)
+	err := ec.c.CallContext(ctx, &head, "quai_getBlockByHash", hash, false)
 	if err == nil && head == nil {
 		return nil, ethereum.NotFound
 	}
@@ -385,7 +385,7 @@ func (ec *Client) getUncles(
 		reqs := make([]rpc.BatchElem, len(body.UncleHashes))
 		for i := range reqs {
 			reqs[i] = rpc.BatchElem{
-				Method: "eth_getUncleByBlockHashAndIndex",
+				Method: "quai_getUncleByBlockHashAndIndex",
 				Args:   []interface{}{body.Hash, hexutil.EncodeUint64(uint64(i))},
 				Result: &uncles[i],
 			}
@@ -600,7 +600,7 @@ func (ec *Client) getBlockReceipts(
 	reqs := make([]rpc.BatchElem, len(txs))
 	for i := range reqs {
 		reqs[i] = rpc.BatchElem{
-			Method: "eth_getTransactionReceipt",
+			Method: "quai_getTransactionReceipt",
 			Args:   []interface{}{txs[i].tx.Hash().Hex()},
 			Result: &receipts[i],
 		}
@@ -1002,7 +1002,7 @@ func (ec *Client) transactionReceipt(
 	txHash common.Hash,
 ) (*types.Receipt, error) {
 	var r *types.Receipt
-	err := ec.c.CallContext(ctx, &r, "eth_getTransactionReceipt", txHash)
+	err := ec.c.CallContext(ctx, &r, "quai_getTransactionReceipt", txHash)
 	if err == nil {
 		if r == nil {
 			return nil, ethereum.NotFound
@@ -1025,7 +1025,7 @@ func (ec *Client) blockByNumber(
 	}
 
 	r := make(map[string]interface{})
-	err := ec.c.CallContext(ctx, &r, "eth_getBlockByNumber", blockIndex, showTxDetails)
+	err := ec.c.CallContext(ctx, &r, "quai_getBlockByNumber", blockIndex, showTxDetails)
 	if err == nil {
 		if r == nil {
 			return nil, ethereum.NotFound
@@ -1062,14 +1062,14 @@ func (ec *Client) contractCall(
 		return nil, ErrCallParametersInvalid
 	}
 
-	// parameters for eth_call
+	// parameters for quai_call
 	callParams := map[string]string{
 		"to":   input.To,
 		"data": input.Data,
 	}
 
 	var resp string
-	if err := ec.c.CallContext(ctx, &resp, "eth_call", callParams, blockQuery); err != nil {
+	if err := ec.c.CallContext(ctx, &resp, "quai_call", callParams, blockQuery); err != nil {
 		return nil, err
 	}
 
@@ -1101,7 +1101,7 @@ func (ec *Client) estimateGas(
 		return nil, ErrCallParametersInvalid
 	}
 
-	// parameters for eth_estimateGas
+	// parameters for quai_estimateGas
 	estimateGasParams := map[string]string{
 		"from": input.From,
 		"to":   input.To,
@@ -1109,7 +1109,7 @@ func (ec *Client) estimateGas(
 	}
 
 	var resp string
-	if err := ec.c.CallContext(ctx, &resp, "eth_estimateGas", estimateGasParams); err != nil {
+	if err := ec.c.CallContext(ctx, &resp, "quai_estimateGas", estimateGasParams); err != nil {
 		return nil, err
 	}
 
@@ -1360,7 +1360,7 @@ type rpcProgress struct {
 // no sync currently running, it returns nil.
 func (ec *Client) syncProgress(ctx context.Context) (*ethereum.SyncProgress, error) {
 	var raw json.RawMessage
-	if err := ec.c.CallContext(ctx, &raw, "eth_syncing"); err != nil {
+	if err := ec.c.CallContext(ctx, &raw, "quai_syncing"); err != nil {
 		return nil, err
 	}
 
@@ -1481,20 +1481,20 @@ func (ec *Client) Balance(
 }
 
 // GetBlockByNumberInput is the input to the call
-// method "eth_getBlockByNumber".
+// method "quai_getBlockByNumber".
 type GetBlockByNumberInput struct {
 	Index         *int64 `json:"index,omitempty"`
 	ShowTxDetails bool   `json:"show_transaction_details"`
 }
 
 // GetTransactionReceiptInput is the input to the call
-// method "eth_getTransactionReceipt".
+// method "quai_getTransactionReceipt".
 type GetTransactionReceiptInput struct {
 	TxHash string `json:"tx_hash"`
 }
 
 // GetCallInput is the input to the call
-// method "eth_call", "eth_estimateGas".
+// method "quai_call", "quai_estimateGas".
 type GetCallInput struct {
 	BlockIndex int64  `json:"index,omitempty"`
 	BlockHash  string `json:"hash,omitempty"`
@@ -1512,7 +1512,7 @@ func (ec *Client) Call(
 	request *RosettaTypes.CallRequest,
 ) (*RosettaTypes.CallResponse, error) {
 	switch request.Method { // nolint:gocritic
-	case "eth_getBlockByNumber":
+	case "quai_getBlockByNumber":
 		var input GetBlockByNumberInput
 		if err := RosettaTypes.UnmarshalMap(request.Parameters, &input); err != nil {
 			return nil, fmt.Errorf("%w: %s", ErrCallParametersInvalid, err.Error())
@@ -1526,7 +1526,7 @@ func (ec *Client) Call(
 		return &RosettaTypes.CallResponse{
 			Result: res,
 		}, nil
-	case "eth_getTransactionReceipt":
+	case "quai_getTransactionReceipt":
 		var input GetTransactionReceiptInput
 		if err := RosettaTypes.UnmarshalMap(request.Parameters, &input); err != nil {
 			return nil, fmt.Errorf("%w: %s", ErrCallParametersInvalid, err.Error())
@@ -1557,7 +1557,7 @@ func (ec *Client) Call(
 		return &RosettaTypes.CallResponse{
 			Result: receiptMap,
 		}, nil
-	case "eth_call":
+	case "quai_call":
 		resp, err := ec.contractCall(ctx, request.Parameters)
 		if err != nil {
 			return nil, err
@@ -1566,7 +1566,7 @@ func (ec *Client) Call(
 		return &RosettaTypes.CallResponse{
 			Result: resp,
 		}, nil
-	case "eth_estimateGas":
+	case "quai_estimateGas":
 		resp, err := ec.estimateGas(ctx, request.Parameters)
 		if err != nil {
 			return nil, err

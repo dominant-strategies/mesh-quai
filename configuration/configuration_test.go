@@ -22,7 +22,7 @@ import (
 	"github.com/coinbase/rosetta-ethereum/ethereum"
 
 	"github.com/coinbase/rosetta-sdk-go/types"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/dominant-strategies/go-quai/params"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -60,12 +60,12 @@ func TestLoadConfiguration(t *testing.T) {
 					Network:    ethereum.MainnetNetwork,
 					Blockchain: ethereum.Blockchain,
 				},
-				Params:                 params.MainnetChainConfig,
+				Params:                 params.ProgpowColosseumChainConfig,
 				GenesisBlockIdentifier: ethereum.MainnetGenesisBlockIdentifier,
 				Port:                   1000,
-				GethURL:                DefaultGethURL,
-				GethArguments:          ethereum.MainnetGethArguments,
-				SkipGethAdmin:          false,
+				GoQuaiURL:              DefaultGoQuaiURL,
+				GoQuaiArguments:        ethereum.MainnetGoQuaiArguments,
+				SkipGoQuaiAdmin:        false,
 			},
 		},
 		"all set (mainnet) + geth": {
@@ -80,69 +80,35 @@ func TestLoadConfiguration(t *testing.T) {
 					Network:    ethereum.MainnetNetwork,
 					Blockchain: ethereum.Blockchain,
 				},
-				Params:                 params.MainnetChainConfig,
+				Params:                 params.ProgpowColosseumChainConfig,
 				GenesisBlockIdentifier: ethereum.MainnetGenesisBlockIdentifier,
 				Port:                   1000,
-				GethURL:                "http://blah",
-				RemoteGeth:             true,
-				GethArguments:          ethereum.MainnetGethArguments,
-				SkipGethAdmin:          true,
+				GoQuaiURL:              "http://blah",
+				RemoteGoQuai:           true,
+				GoQuaiArguments:        ethereum.MainnetGoQuaiArguments,
+				SkipGoQuaiAdmin:        true,
 			},
 		},
-		"all set (ropsten)": {
+		"all set (orchard)": {
 			Mode:    string(Online),
-			Network: Ropsten,
+			Network: Orchard,
 			Port:    "1000",
 			cfg: &Configuration{
 				Mode: Online,
 				Network: &types.NetworkIdentifier{
-					Network:    ethereum.RopstenNetwork,
+					Network:    ethereum.OrchardNetwork,
 					Blockchain: ethereum.Blockchain,
 				},
-				Params:                 params.RopstenChainConfig,
-				GenesisBlockIdentifier: ethereum.RopstenGenesisBlockIdentifier,
+				Params:                 params.ProgpowOrchardChainConfig,
+				GenesisBlockIdentifier: ethereum.OrchardGenesisBlockIdentifier,
 				Port:                   1000,
-				GethURL:                DefaultGethURL,
-				GethArguments:          ethereum.RopstenGethArguments,
-			},
-		},
-		"all set (rinkeby)": {
-			Mode:    string(Online),
-			Network: Rinkeby,
-			Port:    "1000",
-			cfg: &Configuration{
-				Mode: Online,
-				Network: &types.NetworkIdentifier{
-					Network:    ethereum.RinkebyNetwork,
-					Blockchain: ethereum.Blockchain,
-				},
-				Params:                 params.RinkebyChainConfig,
-				GenesisBlockIdentifier: ethereum.RinkebyGenesisBlockIdentifier,
-				Port:                   1000,
-				GethURL:                DefaultGethURL,
-				GethArguments:          ethereum.RinkebyGethArguments,
-			},
-		},
-		"all set (goerli)": {
-			Mode:    string(Online),
-			Network: Goerli,
-			Port:    "1000",
-			cfg: &Configuration{
-				Mode: Online,
-				Network: &types.NetworkIdentifier{
-					Network:    ethereum.GoerliNetwork,
-					Blockchain: ethereum.Blockchain,
-				},
-				Params:                 params.GoerliChainConfig,
-				GenesisBlockIdentifier: ethereum.GoerliGenesisBlockIdentifier,
-				Port:                   1000,
-				GethURL:                DefaultGethURL,
-				GethArguments:          ethereum.GoerliGethArguments,
+				GoQuaiURL:              DefaultGoQuaiURL,
+				GoQuaiArguments:        ethereum.OrchardGoQuaiArguments,
 			},
 		},
 		"all set (testnet)": {
 			Mode:          string(Online),
-			Network:       Testnet,
+			Network:       Local,
 			Port:          "1000",
 			SkipGethAdmin: "TRUE",
 			cfg: &Configuration{
@@ -151,17 +117,17 @@ func TestLoadConfiguration(t *testing.T) {
 					Network:    ethereum.DevNetwork,
 					Blockchain: ethereum.Blockchain,
 				},
-				Params:                 params.AllCliqueProtocolChanges,
+				Params:                 params.ProgpowLocalChainConfig,
 				GenesisBlockIdentifier: nil,
 				Port:                   1000,
-				GethURL:                DefaultGethURL,
-				GethArguments:          ethereum.DevGethArguments,
-				SkipGethAdmin:          true,
+				GoQuaiURL:              DefaultGoQuaiURL,
+				GoQuaiArguments:        ethereum.LocalGoQuaiArguments,
+				SkipGoQuaiAdmin:        true,
 			},
 		},
 		"invalid mode": {
 			Mode:    "bad mode",
-			Network: Ropsten,
+			Network: Orchard,
 			Port:    "1000",
 			err:     errors.New("bad mode is not a valid mode"),
 		},
@@ -173,7 +139,7 @@ func TestLoadConfiguration(t *testing.T) {
 		},
 		"invalid port": {
 			Mode:    string(Offline),
-			Network: Ropsten,
+			Network: Orchard,
 			Port:    "bad port",
 			err:     errors.New("unable to parse port bad port"),
 		},
@@ -184,8 +150,8 @@ func TestLoadConfiguration(t *testing.T) {
 			os.Setenv(ModeEnv, test.Mode)
 			os.Setenv(NetworkEnv, test.Network)
 			os.Setenv(PortEnv, test.Port)
-			os.Setenv(GethEnv, test.Geth)
-			os.Setenv(SkipGethAdminEnv, test.SkipGethAdmin)
+			os.Setenv(GoQuaiEnv, test.Geth)
+			os.Setenv(SkipGoQuaiAdminEnv, test.SkipGethAdmin)
 
 			cfg, err := LoadConfiguration()
 			if test.err != nil {

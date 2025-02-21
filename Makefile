@@ -59,10 +59,10 @@ run-testnet-offline:
 	docker run -d --rm -e "MODE=OFFLINE" -e "NETWORK=TESTNET" -e "PORT=8081" -p 8081:8081 rosetta-ethereum:latest
 
 run-mainnet-remote:
-	docker run -d --rm --ulimit "nofile=${NOFILE}:${NOFILE}" -e "MODE=ONLINE" -e "NETWORK=MAINNET" -e "PORT=8080" -e "GETH=$(geth)" -p 8080:8080 -p 30303:30303 rosetta-ethereum:latest
+	docker run -d --rm --ulimit "nofile=${NOFILE}:${NOFILE}" -e "MODE=ONLINE" -e "NETWORK=MAINNET" -e "PORT=8080" -e "GO_QUAI=$(go-quai)" -p 8080:8080 -p 30303:30303 rosetta-ethereum:latest
 
 run-testnet-remote:
-	docker run -d --rm --ulimit "nofile=${NOFILE}:${NOFILE}" -e "MODE=ONLINE" -e "NETWORK=TESTNET" -e "PORT=8080" -e "GETH=$(geth)" -p 8080:8080 -p 30303:30303 rosetta-ethereum:latest
+	docker run -d --rm --ulimit "nofile=${NOFILE}:${NOFILE}" -e "MODE=ONLINE" -e "NETWORK=TESTNET" -e "PORT=8080" -e "GO_QUAI=$(go-quai)" -p 8080:8080 -p 30303:30303 rosetta-ethereum:latest
 
 check-comments:
 	${GOLINT_INSTALL}

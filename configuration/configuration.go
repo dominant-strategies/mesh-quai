@@ -23,7 +23,7 @@ import (
 	"github.com/coinbase/rosetta-ethereum/ethereum"
 
 	"github.com/coinbase/rosetta-sdk-go/types"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/dominant-strategies/go-quai/params"
 )
 
 // Mode is the setting that determines if
@@ -39,20 +39,14 @@ const (
 	// to make outbound connections.
 	Offline Mode = "OFFLINE"
 
-	// Mainnet is the Ethereum Mainnet.
+	// Mainnet is the Quai Mainnet (aka Colosseum).
 	Mainnet string = "MAINNET"
 
-	// Ropsten is the Ethereum Ropsten testnet.
-	Ropsten string = "ROPSTEN"
+	// Orchard is the Quai Orchard testnet.
+	Orchard string = "ORCHARD"
 
-	// Rinkeby is the Ethereum Rinkeby testnet.
-	Rinkeby string = "RINKEBY"
-
-	// Goerli is the Ethereum Görli testnet.
-	Goerli string = "GOERLI"
-
-	// Testnet defaults to `Ropsten` for backwards compatibility.
-	Testnet string = "TESTNET"
+	// Local is the Quai Local testnet.
+	Local string = "LOCAL"
 
 	// DataDirectory is the default location for all
 	// persistent data.
@@ -71,20 +65,20 @@ const (
 	// implementation.
 	PortEnv = "PORT"
 
-	// GethEnv is an optional environment variable
+	// GoQuaiEnv is an optional environment variable
 	// used to connect rosetta-ethereum to an already
 	// running geth node.
-	GethEnv = "GETH"
+	GoQuaiEnv = "GOQUAI"
 
-	// DefaultGethURL is the default URL for
-	// a running geth node. This is used
-	// when GethEnv is not populated.
-	DefaultGethURL = "http://localhost:8545"
+	// DefaultGoQuaiURL is the default URL for
+	// a running go-quai node. This is used
+	// when GoQuaiEnv is not populated.
+	DefaultGoQuaiURL = "http://localhost:8545"
 
-	// SkipGethAdminEnv is an optional environment variable
+	// SkipGoQuaiAdminEnv is an optional environment variable
 	// to skip geth `admin` calls which are typically not supported
 	// by hosted node services. When not set, defaults to false.
-	SkipGethAdminEnv = "SKIP_GETH_ADMIN"
+	SkipGoQuaiAdminEnv = "SKIP_GO_QUAI_ADMIN"
 
 	// MiddlewareVersion is the version of rosetta-ethereum.
 	MiddlewareVersion = "0.0.4"
@@ -95,11 +89,11 @@ type Configuration struct {
 	Mode                   Mode
 	Network                *types.NetworkIdentifier
 	GenesisBlockIdentifier *types.BlockIdentifier
-	GethURL                string
-	RemoteGeth             bool
+	GoQuaiURL              string
+	RemoteGoQuai           bool
 	Port                   int
-	GethArguments          string
-	SkipGethAdmin          bool
+	GoQuaiArguments        string
+	SkipGoQuaiAdmin        bool
 
 	// Block Reward Data
 	Params *params.ChainConfig
@@ -131,60 +125,44 @@ func LoadConfiguration() (*Configuration, error) {
 		}
 		config.GenesisBlockIdentifier = ethereum.MainnetGenesisBlockIdentifier
 		config.Params = params.MainnetChainConfig
-		config.GethArguments = ethereum.MainnetGethArguments
-	case Ropsten:
+		config.GoQuaiArguments = ethereum.MainnetGoQuaiArguments
+	case Orchard:
 		config.Network = &types.NetworkIdentifier{
 			Blockchain: ethereum.Blockchain,
-			Network:    ethereum.RopstenNetwork,
+			Network:    ethereum.OrchardNetwork,
 		}
-		config.GenesisBlockIdentifier = ethereum.RopstenGenesisBlockIdentifier
-		config.Params = params.RopstenChainConfig
-		config.GethArguments = ethereum.RopstenGethArguments
-	case Rinkeby:
-		config.Network = &types.NetworkIdentifier{
-			Blockchain: ethereum.Blockchain,
-			Network:    ethereum.RinkebyNetwork,
-		}
-		config.GenesisBlockIdentifier = ethereum.RinkebyGenesisBlockIdentifier
-		config.Params = params.RinkebyChainConfig
-		config.GethArguments = ethereum.RinkebyGethArguments
-	case Goerli:
-		config.Network = &types.NetworkIdentifier{
-			Blockchain: ethereum.Blockchain,
-			Network:    ethereum.GoerliNetwork,
-		}
-		config.GenesisBlockIdentifier = ethereum.GoerliGenesisBlockIdentifier
-		config.Params = params.GoerliChainConfig
-		config.GethArguments = ethereum.GoerliGethArguments
-	case Testnet:
+		config.GenesisBlockIdentifier = ethereum.OrchardGenesisBlockIdentifier
+		config.Params = params.OrchardChainConfig
+		config.GoQuaiArguments = ethereum.OrchardGoQuaiArguments
+	case Local:
 		config.Network = &types.NetworkIdentifier{
 			Blockchain: ethereum.Blockchain,
 			Network:    ethereum.DevNetwork,
 		}
 		config.GenesisBlockIdentifier = nil
 		config.Params = params.AllCliqueProtocolChanges
-		config.GethArguments = ethereum.DevGethArguments
+		config.GoQuaiArguments = ethereum.LocalGoQuaiArguments
 	case "":
 		return nil, errors.New("NETWORK must be populated")
 	default:
 		return nil, fmt.Errorf("%s is not a valid network", networkValue)
 	}
 
-	config.GethURL = DefaultGethURL
-	envGethURL := os.Getenv(GethEnv)
+	config.GoQuaiURL = DefaultGoQuaiURL
+	envGethURL := os.Getenv(GoQuaiEnv)
 	if len(envGethURL) > 0 {
-		config.RemoteGeth = true
-		config.GethURL = envGethURL
+		config.RemoteGoQuai = true
+		config.GoQuaiURL = envGethURL
 	}
 
-	config.SkipGethAdmin = false
-	envSkipGethAdmin := os.Getenv(SkipGethAdminEnv)
+	config.SkipGoQuaiAdmin = false
+	envSkipGethAdmin := os.Getenv(SkipGoQuaiAdminEnv)
 	if len(envSkipGethAdmin) > 0 {
 		val, err := strconv.ParseBool(envSkipGethAdmin)
 		if err != nil {
-			return nil, fmt.Errorf("%w: unable to parse SKIP_GETH_ADMIN %s", err, envSkipGethAdmin)
+			return nil, fmt.Errorf("%w: unable to parse SKIP_GO_QUAI_ADMIN %s", err, envSkipGethAdmin)
 		}
-		config.SkipGethAdmin = val
+		config.SkipGoQuaiAdmin = val
 	}
 
 	portValue := os.Getenv(PortEnv)
