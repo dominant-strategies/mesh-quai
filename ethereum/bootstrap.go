@@ -22,6 +22,7 @@ import (
 	"github.com/coinbase/rosetta-sdk-go/storage/modules"
 	"github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/coinbase/rosetta-sdk-go/utils"
+	"github.com/dominant-strategies/go-quai/common"
 )
 
 type genesis struct {
@@ -34,7 +35,7 @@ type genesisAllocation struct {
 
 // GenerateBootstrapFile creates the bootstrap balances file
 // for a particular genesis file.
-func GenerateBootstrapFile(genesisFile string, outputFile string) error {
+func GenerateBootstrapFile(genesisFile string, outputFile string, loc common.Location) error {
 	var genesisAllocations genesis
 	if err := utils.LoadAndParse(genesisFile, &genesisAllocations); err != nil {
 		return fmt.Errorf("%w: could not load genesis file", err)
@@ -44,12 +45,12 @@ func GenerateBootstrapFile(genesisFile string, outputFile string) error {
 	keys := make([]string, 0)
 	formattedAllocations := map[string]string{}
 	for k := range genesisAllocations.Alloc {
-		checkAddr, ok := ChecksumAddress(k)
+		checkAddr, ok := ChecksumAddress(k, loc)
 		if !ok {
 			return fmt.Errorf("invalid address 0x%s", k)
 		}
-		keys = append(keys, checkAddr)
-		formattedAllocations[checkAddr] = genesisAllocations.Alloc[k].Balance
+		keys = append(keys, checkAddr.String())
+		formattedAllocations[checkAddr.String()] = genesisAllocations.Alloc[k].Balance
 	}
 	sort.Strings(keys)
 

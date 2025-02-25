@@ -18,9 +18,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
+
+	"github.com/dominant-strategies/go-quai/log"
 
 	"github.com/dominant-strategies/mesh-quai/configuration"
 	"github.com/dominant-strategies/mesh-quai/ethereum"
@@ -94,7 +95,7 @@ func runRunCmd(cmd *cobra.Command, args []string) error {
 		var err error
 		client, err = ethereum.NewClient(cfg.GoQuaiURL, cfg.Params, cfg.SkipGoQuaiAdmin)
 		if err != nil {
-			return fmt.Errorf("%w: cannot initialize ethereum client", err)
+			return fmt.Errorf("%w: cannot initialize quai client", err)
 		}
 		defer client.Close()
 	}
@@ -112,7 +113,7 @@ func runRunCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	g.Go(func() error {
-		log.Printf("server listening on port %d", cfg.Port)
+		log.Global.Printf("server listening on port %d", cfg.Port)
 		return server.ListenAndServe()
 	})
 

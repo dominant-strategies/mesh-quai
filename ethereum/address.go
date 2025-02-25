@@ -23,20 +23,20 @@ import (
 // ChecksumAddress ensures an Ethereum hex address
 // is in Checksum Format. If the address cannot be converted,
 // it returns !ok.
-func ChecksumAddress(address string) (string, bool) {
-	addr, err := common.NewMixedcaseAddressFromString(address)
+func ChecksumAddress(address string, location common.Location) (common.Address, bool) {
+	addr, err := common.NewMixedcaseAddressFromString(address, location)
 	if err != nil {
-		return "", false
+		return common.Address{}, false
 	}
 
-	return addr.Address().Hex(), true
+	return addr.Address(), true
 }
 
 // MustChecksum ensures an address can be converted
 // into a valid checksum. If it does not, the program
 // will exit.
-func MustChecksum(address string) string {
-	addr, ok := ChecksumAddress(address)
+func MustChecksum(address string, location common.Location) common.Address {
+	addr, ok := ChecksumAddress(address, location)
 	if !ok {
 		log.Fatalf("invalid address %s", address)
 	}
