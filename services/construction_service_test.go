@@ -22,8 +22,8 @@ import (
 	"testing"
 
 	"github.com/dominant-strategies/mesh-quai/configuration"
-	"github.com/dominant-strategies/mesh-quai/ethereum"
 	mocks "github.com/dominant-strategies/mesh-quai/mocks/services"
+	"github.com/dominant-strategies/mesh-quai/quai"
 
 	"github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/dominant-strategies/go-quai/common"
@@ -52,14 +52,14 @@ func forceMarshalMap(t *testing.T, i interface{}) map[string]interface{} {
 
 func TestConstructionService(t *testing.T) {
 	networkIdentifier = &types.NetworkIdentifier{
-		Network:    ethereum.RopstenNetwork,
-		Blockchain: ethereum.Blockchain,
+		Network:    quai.OrchardNetwork,
+		Blockchain: quai.Blockchain,
 	}
 
 	cfg := &configuration.Configuration{
 		Mode:    configuration.Online,
 		Network: networkIdentifier,
-		Params:  params.OrchardChainConfig,
+		Params:  params.ProgpowOrchardChainConfig,
 	}
 
 	mockClient := &mocks.Client{}
@@ -120,7 +120,7 @@ func TestConstructionService(t *testing.T) {
 	mockClient.On(
 		"PendingNonceAt",
 		ctx,
-		common.HexToAddress("0xe3a5B4d7f79d64088C8d4ef153A7DDe2B2d47309"),
+		common.HexToAddress("0xe3a5B4d7f79d64088C8d4ef153A7DDe2B2d47309", common.Location{0, 0}),
 	).Return(
 		uint64(0),
 		nil,
@@ -135,7 +135,7 @@ func TestConstructionService(t *testing.T) {
 		SuggestedFee: []*types.Amount{
 			{
 				Value:    "21000000000000",
-				Currency: ethereum.Currency,
+				Currency: quai.Currency,
 			},
 		},
 	}, metadataResponse)

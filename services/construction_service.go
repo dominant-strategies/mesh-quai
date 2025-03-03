@@ -20,7 +20,7 @@ import (
 	"strconv"
 
 	"github.com/dominant-strategies/mesh-quai/configuration"
-	"github.com/dominant-strategies/mesh-quai/ethereum"
+	"github.com/dominant-strategies/mesh-quai/quai"
 
 	"github.com/dominant-strategies/go-quai/common"
 	ethTypes "github.com/dominant-strategies/go-quai/core/types"
@@ -76,25 +76,25 @@ func (s *ConstructionAPIService) ConstructionPreprocess(
 	descriptions := &parser.Descriptions{
 		OperationDescriptions: []*parser.OperationDescription{
 			{
-				Type: ethereum.CallOpType,
+				Type: quai.CallOpType,
 				Account: &parser.AccountDescription{
 					Exists: true,
 				},
 				Amount: &parser.AmountDescription{
 					Exists:   true,
 					Sign:     parser.NegativeAmountSign,
-					Currency: ethereum.Currency,
+					Currency: quai.Currency,
 				},
 			},
 			{
-				Type: ethereum.CallOpType,
+				Type: quai.CallOpType,
 				Account: &parser.AccountDescription{
 					Exists: true,
 				},
 				Amount: &parser.AmountDescription{
 					Exists:   true,
 					Sign:     parser.PositiveAmountSign,
-					Currency: ethereum.Currency,
+					Currency: quai.Currency,
 				},
 			},
 		},
@@ -112,13 +112,13 @@ func (s *ConstructionAPIService) ConstructionPreprocess(
 	toAdd := toOp.Account.Address
 
 	// Ensure valid from address
-	checkFrom, ok := ethereum.ChecksumAddress(fromAdd, location)
+	checkFrom, ok := quai.ChecksumAddress(fromAdd, location)
 	if !ok {
 		return nil, wrapErr(ErrInvalidAddress, fmt.Errorf("%s is not a valid address", fromAdd))
 	}
 
 	// Ensure valid to address
-	_, ok = ethereum.ChecksumAddress(toAdd, location)
+	_, ok = quai.ChecksumAddress(toAdd, location)
 	if !ok {
 		return nil, wrapErr(ErrInvalidAddress, fmt.Errorf("%s is not a valid address", toAdd))
 	}
@@ -171,14 +171,14 @@ func (s *ConstructionAPIService) ConstructionMetadata(
 	}
 
 	// Find suggested gas usage
-	suggestedFee := metadata.GasPrice.Int64() * ethereum.TransferGasLimit
+	suggestedFee := metadata.GasPrice.Int64() * quai.TransferGasLimit
 
 	return &types.ConstructionMetadataResponse{
 		Metadata: metadataMap,
 		SuggestedFee: []*types.Amount{
 			{
 				Value:    strconv.FormatInt(suggestedFee, 10),
-				Currency: ethereum.Currency,
+				Currency: quai.Currency,
 			},
 		},
 	}, nil

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ethereum
+package quai
 
 import (
 	"context"
@@ -20,6 +20,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"math/big"
+	"os"
 	"reflect"
 	"sort"
 	"testing"
@@ -128,9 +129,9 @@ func TestStatus_NotSyncing(t *testing.T) {
 		nil,
 	).Run(
 		func(args mock.Arguments) {
-			info := args.Get(1).(*[]*p2p.PeerInfo)
+			info := args.Get(1).(*[]*p2p.PeerID)
 
-			file, err := ioutil.ReadFile("testdata/peers.json")
+			file, err := os.ReadFile("testdata/peers.json")
 			assert.NoError(t, err)
 
 			assert.NoError(t, json.Unmarshal(file, info))
@@ -327,9 +328,9 @@ func TestStatus_Syncing(t *testing.T) {
 		nil,
 	).Run(
 		func(args mock.Arguments) {
-			info := args.Get(1).(*[]*p2p.PeerInfo)
+			info := args.Get(1).(*[]*p2p.PeerID)
 
-			file, err := ioutil.ReadFile("testdata/peers.json")
+			file, err := os.ReadFile("testdata/peers.json")
 			assert.NoError(t, err)
 
 			assert.NoError(t, json.Unmarshal(file, info))
@@ -1175,13 +1176,13 @@ func TestBlock_Current(t *testing.T) {
 	mockJSONRPC := &mocks.JSONRPC{}
 	mockGraphQL := &mocks.GraphQL{}
 
-	tc, err := testTraceConfig()
-	assert.NoError(t, err)
+	// tc, err := testTraceConfig()
+	// assert.NoError(t, err)
 	c := &Client{
-		c:              mockJSONRPC,
-		g:              mockGraphQL,
-		tc:             tc,
-		p:              params.OrchardChainConfig,
+		c: mockJSONRPC,
+		g: mockGraphQL,
+		// tc:             tc,
+		p:              params.ProgpowOrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1211,7 +1212,6 @@ func TestBlock_Current(t *testing.T) {
 		mock.Anything,
 		"debug_traceBlockByHash",
 		common.HexToHash("0xba9ded5ca1ec9adb9451bf062c9de309d9552fa0f0254a7b982d3daf7ae436ae"),
-		tc,
 	).Return(
 		nil,
 	).Run(
@@ -1247,13 +1247,12 @@ func TestBlock_Hash(t *testing.T) {
 	mockJSONRPC := &mocks.JSONRPC{}
 	mockGraphQL := &mocks.GraphQL{}
 
-	tc, err := testTraceConfig()
-	assert.NoError(t, err)
+	// tc, err := testTraceConfig()
+	// assert.NoError(t, err)
 	c := &Client{
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
-		tc:             tc,
-		p:              params.OrchardChainConfig,
+		p:              params.ProgpowOrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1283,7 +1282,6 @@ func TestBlock_Hash(t *testing.T) {
 		mock.Anything,
 		"debug_traceBlockByHash",
 		common.HexToHash("0xba9ded5ca1ec9adb9451bf062c9de309d9552fa0f0254a7b982d3daf7ae436ae"),
-		tc,
 	).Return(
 		nil,
 	).Run(
@@ -1323,13 +1321,12 @@ func TestBlock_Index(t *testing.T) {
 	mockJSONRPC := &mocks.JSONRPC{}
 	mockGraphQL := &mocks.GraphQL{}
 
-	tc, err := testTraceConfig()
-	assert.NoError(t, err)
+	// tc, err := testTraceConfig()
+	// assert.NoError(t, err)
 	c := &Client{
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
-		tc:             tc,
-		p:              params.OrchardChainConfig,
+		p:              params.ProgpowOrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1359,7 +1356,6 @@ func TestBlock_Index(t *testing.T) {
 		mock.Anything,
 		"debug_traceBlockByHash",
 		common.HexToHash("0xba9ded5ca1ec9adb9451bf062c9de309d9552fa0f0254a7b982d3daf7ae436ae"),
-		tc,
 	).Return(
 		nil,
 	).Run(
@@ -1397,13 +1393,12 @@ func TestBlock_FirstBlock(t *testing.T) {
 	mockJSONRPC := &mocks.JSONRPC{}
 	mockGraphQL := &mocks.GraphQL{}
 
-	tc, err := testTraceConfig()
-	assert.NoError(t, err)
+	// tc, err := testTraceConfig()
+	// assert.NoError(t, err)
 	c := &Client{
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
-		tc:             tc,
-		p:              params.OrchardChainConfig,
+		p:              params.ProgpowOrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1480,13 +1475,12 @@ func TestTransaction_Hash(t *testing.T) {
 	txHash := "0x9cc8e6a09ae9cbdb7da77515110a8e343a945df4269c53842dd26969d32c6cc4"
 	blockHash := "0xc10a51a3898a85c7165a9d883acc9a68f139934d0cb91dfad4c7d3a7c1a1960d"
 
-	tc, err := testTraceConfig()
-	assert.NoError(t, err)
+	// tc, err := testTraceConfig()
+	// assert.NoError(t, err)
 	c := &Client{
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
-		tc:             tc,
-		p:              params.OrchardChainConfig,
+		p:              params.ProgpowOrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1565,7 +1559,6 @@ func TestTransaction_Hash(t *testing.T) {
 		mock.Anything,
 		"debug_traceTransaction",
 		common.HexToHash(txHash),
-		tc,
 	).Return(
 		nil,
 	).Run(
@@ -1612,13 +1605,12 @@ func TestBlock_10994(t *testing.T) {
 	mockJSONRPC := &mocks.JSONRPC{}
 	mockGraphQL := &mocks.GraphQL{}
 
-	tc, err := testTraceConfig()
-	assert.NoError(t, err)
+	// tc, err := testTraceConfig()
+	// assert.NoError(t, err)
 	c := &Client{
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
-		tc:             tc,
-		p:              params.OrchardChainConfig,
+		p:              params.ProgpowOrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1648,7 +1640,6 @@ func TestBlock_10994(t *testing.T) {
 		mock.Anything,
 		"debug_traceBlockByHash",
 		common.HexToHash("0xb6a2558c2e54bfb11247d0764311143af48d122f29fc408d9519f47d70aa2d50"),
-		tc,
 	).Return(
 		nil,
 	).Run(
@@ -1718,13 +1709,12 @@ func TestBlock_10991(t *testing.T) {
 	mockJSONRPC := &mocks.JSONRPC{}
 	mockGraphQL := &mocks.GraphQL{}
 
-	tc, err := testTraceConfig()
-	assert.NoError(t, err)
+	// tc, err := testTraceConfig()
+	// assert.NoError(t, err)
 	c := &Client{
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
-		tc:             tc,
-		p:              params.OrchardChainConfig,
+		p:              params.ProgpowOrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1754,7 +1744,6 @@ func TestBlock_10991(t *testing.T) {
 		mock.Anything,
 		"debug_traceBlockByHash",
 		common.HexToHash("0x4cd21f49705529e2628f8ae1a248bcd0e3cafd21bf6d741bdee2820af82cff95"),
-		tc,
 	).Return(
 		nil,
 	).Run(
@@ -1823,13 +1812,12 @@ func TestBlock_239782(t *testing.T) {
 	mockJSONRPC := &mocks.JSONRPC{}
 	mockGraphQL := &mocks.GraphQL{}
 
-	tc, err := testTraceConfig()
-	assert.NoError(t, err)
+	// tc, err := testTraceConfig()
+	// assert.NoError(t, err)
 	c := &Client{
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
-		tc:             tc,
-		p:              params.OrchardChainConfig,
+		p:              params.ProgpowOrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1859,7 +1847,6 @@ func TestBlock_239782(t *testing.T) {
 		mock.Anything,
 		"debug_traceBlockByHash",
 		common.HexToHash("0xc4487850a40d85b79cf5e5b69db38284fbd39efcf902ca8a6d9f2ba89c538ea3"),
-		tc,
 	).Return(
 		nil,
 	).Run(
@@ -1929,13 +1916,12 @@ func TestBlock_363415(t *testing.T) {
 	mockJSONRPC := &mocks.JSONRPC{}
 	mockGraphQL := &mocks.GraphQL{}
 
-	tc, err := testTraceConfig()
-	assert.NoError(t, err)
+	// tc, err := testTraceConfig()
+	// assert.NoError(t, err)
 	c := &Client{
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
-		tc:             tc,
-		p:              params.OrchardChainConfig,
+		p:              params.ProgpowOrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -1965,7 +1951,6 @@ func TestBlock_363415(t *testing.T) {
 		mock.Anything,
 		"debug_traceBlockByHash",
 		common.HexToHash("0xf0445269b02ba461af662d8c6aac50d9557a0cc9dbe580d3e180efd7879cc79e"),
-		tc,
 	).Return(
 		nil,
 	).Run(
@@ -2041,13 +2026,12 @@ func TestBlock_363753(t *testing.T) {
 	mockJSONRPC := &mocks.JSONRPC{}
 	mockGraphQL := &mocks.GraphQL{}
 
-	tc, err := testTraceConfig()
-	assert.NoError(t, err)
+	// tc, err := testTraceConfig()
+	// assert.NoError(t, err)
 	c := &Client{
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
-		tc:             tc,
-		p:              params.OrchardChainConfig,
+		p:              params.ProgpowOrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -2077,7 +2061,6 @@ func TestBlock_363753(t *testing.T) {
 		mock.Anything,
 		"debug_traceBlockByHash",
 		common.HexToHash("0x3defb56cc49cf7603e08749516a003baae0944596e4555b0d868ec225ff2bcd3"),
-		tc,
 	).Return(
 		nil,
 	).Run(
@@ -2153,13 +2136,12 @@ func TestBlock_468179(t *testing.T) {
 	mockJSONRPC := &mocks.JSONRPC{}
 	mockGraphQL := &mocks.GraphQL{}
 
-	tc, err := testTraceConfig()
-	assert.NoError(t, err)
+	// tc, err := testTraceConfig()
+	// assert.NoError(t, err)
 	c := &Client{
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
-		tc:             tc,
-		p:              params.OrchardChainConfig,
+		p:              params.ProgpowOrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -2189,7 +2171,6 @@ func TestBlock_468179(t *testing.T) {
 		mock.Anything,
 		"debug_traceBlockByHash",
 		common.HexToHash("0xd88e8376ec3eef899d9fbc6349e8330ebfc102b245fef784a999ac854091cb64"),
-		tc,
 	).Return(
 		nil,
 	).Run(
@@ -2265,13 +2246,12 @@ func TestBlock_363366(t *testing.T) {
 	mockJSONRPC := &mocks.JSONRPC{}
 	mockGraphQL := &mocks.GraphQL{}
 
-	tc, err := testTraceConfig()
-	assert.NoError(t, err)
+	// tc, err := testTraceConfig()
+	// assert.NoError(t, err)
 	c := &Client{
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
-		tc:             tc,
-		p:              params.OrchardChainConfig,
+		p:              params.ProgpowOrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -2301,7 +2281,6 @@ func TestBlock_363366(t *testing.T) {
 		mock.Anything,
 		"debug_traceBlockByHash",
 		common.HexToHash("0x5f7c67c2eb0e828b0f4a0e64d5fbae0ed66b70c9ae752e6175c9ef62402502df"),
-		tc,
 	).Return(
 		nil,
 	).Run(
@@ -2378,13 +2357,12 @@ func TestBlock_468194(t *testing.T) {
 	mockJSONRPC := &mocks.JSONRPC{}
 	mockGraphQL := &mocks.GraphQL{}
 
-	tc, err := testTraceConfig()
-	assert.NoError(t, err)
+	// tc, err := testTraceConfig()
+	// assert.NoError(t, err)
 	c := &Client{
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
-		tc:             tc,
-		p:              params.OrchardChainConfig,
+		p:              params.ProgpowOrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -2414,7 +2392,6 @@ func TestBlock_468194(t *testing.T) {
 		mock.Anything,
 		"debug_traceBlockByHash",
 		common.HexToHash("0xf0d9ab47473e38f98b195ba7a17934f68519168f5fdec9899b3c18180d8fbb54"),
-		tc,
 	).Return(
 		nil,
 	).Run(
@@ -2494,13 +2471,12 @@ func TestBlock_13998626(t *testing.T) {
 	mockJSONRPC := &mocks.JSONRPC{}
 	mockGraphQL := &mocks.GraphQL{}
 
-	tc, err := testTraceConfig()
-	assert.NoError(t, err)
+	// tc, err := testTraceConfig()
+	// assert.NoError(t, err)
 	c := &Client{
 		c:              mockJSONRPC,
 		g:              mockGraphQL,
-		tc:             tc,
-		p:              params.OrchardChainConfig,
+		p:              params.ProgpowOrchardChainConfig,
 		traceSemaphore: semaphore.NewWeighted(100),
 	}
 
@@ -2530,7 +2506,6 @@ func TestBlock_13998626(t *testing.T) {
 		mock.Anything,
 		"debug_traceBlockByHash",
 		common.HexToHash("0x68985b6b06bb5c6012393145729babb983fc16c50ec5207972ddda02de02f7e2"),
-		tc,
 	).Return(
 		nil,
 	).Run(
@@ -2619,7 +2594,7 @@ func TestPendingNonceAt(t *testing.T) {
 		ctx,
 		mock.Anything,
 		"quai_getTransactionCount",
-		common.HexToAddress("0xfFC614eE978630D7fB0C06758DeB580c152154d3"),
+		common.HexToAddress("0xfFC614eE978630D7fB0C06758DeB580c152154d3", common.Location{0, 0}),
 		"pending",
 	).Return(
 		nil,
@@ -2632,7 +2607,7 @@ func TestPendingNonceAt(t *testing.T) {
 	).Once()
 	resp, err := c.PendingNonceAt(
 		ctx,
-		common.HexToAddress("0xfFC614eE978630D7fB0C06758DeB580c152154d3"),
+		common.HexToAddress("0xfFC614eE978630D7fB0C06758DeB580c152154d3", common.Location{0, 0}),
 	)
 	assert.Equal(t, uint64(10), resp)
 	assert.NoError(t, err)

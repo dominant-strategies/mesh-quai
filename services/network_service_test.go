@@ -19,7 +19,7 @@ import (
 	"testing"
 
 	"github.com/dominant-strategies/mesh-quai/configuration"
-	"github.com/dominant-strategies/mesh-quai/ethereum"
+	"github.com/dominant-strategies/mesh-quai/quai"
 	mocks "github.com/dominant-strategies/mesh-quai/mocks/services"
 
 	"github.com/coinbase/rosetta-sdk-go/types"
@@ -35,17 +35,17 @@ var (
 			MiddlewareVersion: &middlewareVersion,
 		},
 		Allow: &types.Allow{
-			OperationStatuses:       ethereum.OperationStatuses,
-			OperationTypes:          ethereum.OperationTypes,
+			OperationStatuses:       quai.OperationStatuses,
+			OperationTypes:          quai.OperationTypes,
 			Errors:                  Errors,
-			HistoricalBalanceLookup: ethereum.HistoricalBalanceSupported,
-			CallMethods:             ethereum.CallMethods,
+			HistoricalBalanceLookup: quai.HistoricalBalanceSupported,
+			CallMethods:             quai.CallMethods,
 		},
 	}
 
 	networkIdentifier = &types.NetworkIdentifier{
-		Network:    ethereum.MainnetNetwork,
-		Blockchain: ethereum.Blockchain,
+		Network:    quai.MainnetNetwork,
+		Blockchain: quai.Blockchain,
 	}
 )
 
@@ -80,7 +80,7 @@ func TestNetworkEndpoints_Online(t *testing.T) {
 	cfg := &configuration.Configuration{
 		Mode:                   configuration.Online,
 		Network:                networkIdentifier,
-		GenesisBlockIdentifier: ethereum.MainnetGenesisBlockIdentifier,
+		GenesisBlockIdentifier: quai.MainnetGenesisBlockIdentifier,
 	}
 	mockClient := &mocks.Client{}
 	servicer := NewNetworkAPIService(cfg, mockClient)
@@ -122,7 +122,7 @@ func TestNetworkEndpoints_Online(t *testing.T) {
 	networkStatus, err := servicer.NetworkStatus(ctx, nil)
 	assert.Nil(t, err)
 	assert.Equal(t, &types.NetworkStatusResponse{
-		GenesisBlockIdentifier: ethereum.MainnetGenesisBlockIdentifier,
+		GenesisBlockIdentifier: quai.MainnetGenesisBlockIdentifier,
 		CurrentBlockIdentifier: currentBlock,
 		CurrentBlockTimestamp:  currentTime,
 		Peers:                  peers,

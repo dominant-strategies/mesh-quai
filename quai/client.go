@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ethereum
+package quai
 
 import (
 	"context"
@@ -409,10 +409,10 @@ func (ec *Client) getBlock(
 		return nil, nil, err
 	}
 
-	uncles, err := ec.getUncles(ctx, workObject, &body)
-	if err != nil {
-		return nil, nil, fmt.Errorf("%w: unable to get uncles", err)
-	}
+	// uncles, err := ec.getUncles(ctx, workObject, &body)
+	// if err != nil {
+	// 	return nil, nil, fmt.Errorf("%w: unable to get uncles", err)
+	// }
 
 	// Get all transaction receipts
 	receipts, err := ec.getBlockReceipts(ctx, body.Hash, body.Transactions)

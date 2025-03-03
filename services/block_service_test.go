@@ -20,8 +20,8 @@ import (
 	"testing"
 
 	"github.com/dominant-strategies/mesh-quai/configuration"
-	"github.com/dominant-strategies/mesh-quai/ethereum"
 	mocks "github.com/dominant-strategies/mesh-quai/mocks/services"
+	"github.com/dominant-strategies/mesh-quai/quai"
 
 	"github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/stretchr/testify/assert"
@@ -93,7 +93,7 @@ func TestBlockService_Online(t *testing.T) {
 
 	t.Run("orphaned block", func(t *testing.T) {
 		pbIdentifier := types.ConstructPartialBlockIdentifier(block.BlockIdentifier)
-		mockClient.On("Block", ctx, pbIdentifier).Return(nil, ethereum.ErrBlockOrphaned).Once()
+		mockClient.On("Block", ctx, pbIdentifier).Return(nil, quai.ErrBlockOrphaned).Once()
 		b, err := servicer.Block(ctx, &types.BlockRequest{
 			BlockIdentifier: pbIdentifier,
 		})

@@ -19,7 +19,7 @@ import (
 	"testing"
 
 	"github.com/dominant-strategies/mesh-quai/configuration"
-	"github.com/dominant-strategies/mesh-quai/ethereum"
+	"github.com/dominant-strategies/mesh-quai/quai"
 	mocks "github.com/dominant-strategies/mesh-quai/mocks/services"
 
 	"github.com/coinbase/rosetta-sdk-go/types"
@@ -69,7 +69,7 @@ func TestAccountBalance_Online(t *testing.T) {
 		Balances: []*types.Amount{
 			{
 				Value:    "25",
-				Currency: ethereum.Currency,
+				Currency: quai.Currency,
 			},
 		},
 	}

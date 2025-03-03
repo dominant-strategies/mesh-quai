@@ -19,10 +19,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/dominant-strategies/mesh-quai/ethereum"
-
 	"github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/dominant-strategies/go-quai/params"
+	"github.com/dominant-strategies/mesh-quai/quai"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -57,14 +56,14 @@ func TestLoadConfiguration(t *testing.T) {
 			cfg: &Configuration{
 				Mode: Online,
 				Network: &types.NetworkIdentifier{
-					Network:    ethereum.MainnetNetwork,
-					Blockchain: ethereum.Blockchain,
+					Network:    quai.MainnetNetwork,
+					Blockchain: quai.Blockchain,
 				},
 				Params:                 params.ProgpowColosseumChainConfig,
-				GenesisBlockIdentifier: ethereum.MainnetGenesisBlockIdentifier,
+				GenesisBlockIdentifier: quai.MainnetGenesisBlockIdentifier,
 				Port:                   1000,
 				GoQuaiURL:              DefaultGoQuaiURL,
-				GoQuaiArguments:        ethereum.MainnetGoQuaiArguments,
+				GoQuaiArguments:        quai.MainnetGoQuaiArguments,
 				SkipGoQuaiAdmin:        false,
 			},
 		},
@@ -77,15 +76,15 @@ func TestLoadConfiguration(t *testing.T) {
 			cfg: &Configuration{
 				Mode: Online,
 				Network: &types.NetworkIdentifier{
-					Network:    ethereum.MainnetNetwork,
-					Blockchain: ethereum.Blockchain,
+					Network:    quai.MainnetNetwork,
+					Blockchain: quai.Blockchain,
 				},
 				Params:                 params.ProgpowColosseumChainConfig,
-				GenesisBlockIdentifier: ethereum.MainnetGenesisBlockIdentifier,
+				GenesisBlockIdentifier: quai.MainnetGenesisBlockIdentifier,
 				Port:                   1000,
 				GoQuaiURL:              "http://blah",
 				RemoteGoQuai:           true,
-				GoQuaiArguments:        ethereum.MainnetGoQuaiArguments,
+				GoQuaiArguments:        quai.MainnetGoQuaiArguments,
 				SkipGoQuaiAdmin:        true,
 			},
 		},
@@ -96,14 +95,14 @@ func TestLoadConfiguration(t *testing.T) {
 			cfg: &Configuration{
 				Mode: Online,
 				Network: &types.NetworkIdentifier{
-					Network:    ethereum.OrchardNetwork,
-					Blockchain: ethereum.Blockchain,
+					Network:    quai.OrchardNetwork,
+					Blockchain: quai.Blockchain,
 				},
 				Params:                 params.ProgpowOrchardChainConfig,
-				GenesisBlockIdentifier: ethereum.OrchardGenesisBlockIdentifier,
+				GenesisBlockIdentifier: quai.OrchardGenesisBlockIdentifier,
 				Port:                   1000,
 				GoQuaiURL:              DefaultGoQuaiURL,
-				GoQuaiArguments:        ethereum.OrchardGoQuaiArguments,
+				GoQuaiArguments:        quai.OrchardGoQuaiArguments,
 			},
 		},
 		"all set (testnet)": {
@@ -114,14 +113,14 @@ func TestLoadConfiguration(t *testing.T) {
 			cfg: &Configuration{
 				Mode: Online,
 				Network: &types.NetworkIdentifier{
-					Network:    ethereum.DevNetwork,
-					Blockchain: ethereum.Blockchain,
+					Network:    quai.DevNetwork,
+					Blockchain: quai.Blockchain,
 				},
 				Params:                 params.ProgpowLocalChainConfig,
 				GenesisBlockIdentifier: nil,
 				Port:                   1000,
 				GoQuaiURL:              DefaultGoQuaiURL,
-				GoQuaiArguments:        ethereum.LocalGoQuaiArguments,
+				GoQuaiArguments:        quai.LocalGoQuaiArguments,
 				SkipGoQuaiAdmin:        true,
 			},
 		},

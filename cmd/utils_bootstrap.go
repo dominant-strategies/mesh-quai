@@ -16,7 +16,7 @@ package cmd
 
 import (
 	"github.com/dominant-strategies/go-quai/common"
-	"github.com/dominant-strategies/mesh-quai/ethereum"
+	"github.com/dominant-strategies/mesh-quai/quai"
 
 	"github.com/spf13/cobra"
 )
@@ -39,5 +39,5 @@ When calling this command, you must provide 2 arguments:
 )
 
 func runUtilsBootstrapCmd(cmd *cobra.Command, args []string) error {
-	return ethereum.GenerateBootstrapFile(args[0], args[1], common.Location{0, 0})
+	return quai.GenerateBootstrapFile(args[0], args[1], common.Location{0, 0})
 }

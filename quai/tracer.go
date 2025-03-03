@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ethereum
+package quai
 
 // convert raw eth data from client to rosetta
 

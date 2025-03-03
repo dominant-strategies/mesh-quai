@@ -24,7 +24,7 @@ import (
 	"github.com/dominant-strategies/go-quai/log"
 
 	"github.com/dominant-strategies/mesh-quai/configuration"
-	"github.com/dominant-strategies/mesh-quai/ethereum"
+	"github.com/dominant-strategies/mesh-quai/quai"
 	"github.com/dominant-strategies/mesh-quai/services"
 
 	"github.com/coinbase/rosetta-sdk-go/asserter"
@@ -66,11 +66,11 @@ func runRunCmd(cmd *cobra.Command, args []string) error {
 	// The asserter automatically rejects incorrectly formatted
 	// requests.
 	asserter, err := asserter.NewServer(
-		ethereum.OperationTypes,
-		ethereum.HistoricalBalanceSupported,
+		quai.OperationTypes,
+		quai.HistoricalBalanceSupported,
 		[]*types.NetworkIdentifier{cfg.Network},
-		ethereum.CallMethods,
-		ethereum.IncludeMempoolCoins,
+		quai.CallMethods,
+		quai.IncludeMempoolCoins,
 		"",
 	)
 	if err != nil {
@@ -84,16 +84,16 @@ func runRunCmd(cmd *cobra.Command, args []string) error {
 
 	g, ctx := errgroup.WithContext(ctx)
 
-	var client *ethereum.Client
+	var client *quai.Client
 	if cfg.Mode == configuration.Online {
 		if !cfg.RemoteGoQuai {
 			g.Go(func() error {
-				return ethereum.StartGeth(ctx, cfg.GoQuaiArguments, g)
+				return quai.StartGeth(ctx, cfg.GoQuaiArguments, g)
 			})
 		}
 
 		var err error
-		client, err = ethereum.NewClient(cfg.GoQuaiURL, cfg.Params, cfg.SkipGoQuaiAdmin)
+		client, err = quai.NewClient(cfg.GoQuaiURL, cfg.Params, cfg.SkipGoQuaiAdmin)
 		if err != nil {
 			return fmt.Errorf("%w: cannot initialize quai client", err)
 		}

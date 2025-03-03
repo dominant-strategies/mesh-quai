@@ -19,7 +19,7 @@ import (
 	"errors"
 
 	"github.com/dominant-strategies/mesh-quai/configuration"
-	"github.com/dominant-strategies/mesh-quai/ethereum"
+	"github.com/dominant-strategies/mesh-quai/quai"
 
 	"github.com/coinbase/rosetta-sdk-go/types"
 )
@@ -48,13 +48,13 @@ func (s *CallAPIService) Call(
 	}
 
 	response, err := s.client.Call(ctx, request)
-	if errors.Is(err, ethereum.ErrCallParametersInvalid) {
+	if errors.Is(err, quai.ErrCallParametersInvalid) {
 		return nil, wrapErr(ErrCallParametersInvalid, err)
 	}
-	if errors.Is(err, ethereum.ErrCallOutputMarshal) {
+	if errors.Is(err, quai.ErrCallOutputMarshal) {
 		return nil, wrapErr(ErrCallOutputMarshal, err)
 	}
-	if errors.Is(err, ethereum.ErrCallMethodInvalid) {
+	if errors.Is(err, quai.ErrCallMethodInvalid) {
 		return nil, wrapErr(ErrCallMethodInvalid, err)
 	}
 	if err != nil {

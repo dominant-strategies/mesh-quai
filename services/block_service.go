@@ -19,7 +19,7 @@ import (
 	"errors"
 
 	"github.com/dominant-strategies/mesh-quai/configuration"
-	"github.com/dominant-strategies/mesh-quai/ethereum"
+	"github.com/dominant-strategies/mesh-quai/quai"
 
 	"github.com/coinbase/rosetta-sdk-go/types"
 )
@@ -51,7 +51,7 @@ func (s *BlockAPIService) Block(
 	}
 
 	block, err := s.client.Block(ctx, request.BlockIdentifier)
-	if errors.Is(err, ethereum.ErrBlockOrphaned) {
+	if errors.Is(err, quai.ErrBlockOrphaned) {
 		return nil, wrapErr(ErrBlockOrphaned, err)
 	}
 	if err != nil {

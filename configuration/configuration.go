@@ -20,10 +20,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/dominant-strategies/mesh-quai/ethereum"
-
 	"github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/dominant-strategies/go-quai/params"
+	"github.com/dominant-strategies/mesh-quai/quai"
 )
 
 // Mode is the setting that determines if
@@ -120,28 +119,28 @@ func LoadConfiguration() (*Configuration, error) {
 	switch networkValue {
 	case Mainnet:
 		config.Network = &types.NetworkIdentifier{
-			Blockchain: ethereum.Blockchain,
-			Network:    ethereum.MainnetNetwork,
+			Blockchain: quai.Blockchain,
+			Network:    quai.MainnetNetwork,
 		}
-		config.GenesisBlockIdentifier = ethereum.MainnetGenesisBlockIdentifier
+		config.GenesisBlockIdentifier = quai.MainnetGenesisBlockIdentifier
 		config.Params = params.ProgpowColosseumChainConfig
-		config.GoQuaiArguments = ethereum.MainnetGoQuaiArguments
+		config.GoQuaiArguments = quai.MainnetGoQuaiArguments
 	case Orchard:
 		config.Network = &types.NetworkIdentifier{
-			Blockchain: ethereum.Blockchain,
-			Network:    ethereum.OrchardNetwork,
+			Blockchain: quai.Blockchain,
+			Network:    quai.OrchardNetwork,
 		}
-		config.GenesisBlockIdentifier = ethereum.OrchardGenesisBlockIdentifier
+		config.GenesisBlockIdentifier = quai.OrchardGenesisBlockIdentifier
 		config.Params = params.ProgpowOrchardChainConfig
-		config.GoQuaiArguments = ethereum.OrchardGoQuaiArguments
+		config.GoQuaiArguments = quai.OrchardGoQuaiArguments
 	case Local:
 		config.Network = &types.NetworkIdentifier{
-			Blockchain: ethereum.Blockchain,
-			Network:    ethereum.DevNetwork,
+			Blockchain: quai.Blockchain,
+			Network:    quai.DevNetwork,
 		}
 		config.GenesisBlockIdentifier = nil
 		config.Params = params.ProgpowLocalChainConfig
-		config.GoQuaiArguments = ethereum.LocalGoQuaiArguments
+		config.GoQuaiArguments = quai.LocalGoQuaiArguments
 	case "":
 		return nil, errors.New("NETWORK must be populated")
 	default:
