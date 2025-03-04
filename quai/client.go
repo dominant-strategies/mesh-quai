@@ -32,7 +32,6 @@ import (
 	"github.com/dominant-strategies/go-quai/params"
 	"github.com/dominant-strategies/go-quai/rlp"
 	"github.com/dominant-strategies/go-quai/rpc"
-	"github.com/ethereum/go-ethereum"
 	"github.com/libp2p/go-libp2p/core/peer"
 	"golang.org/x/sync/semaphore"
 )
@@ -110,21 +109,21 @@ func (ec *Client) Status(ctx context.Context) (
 		return nil, -1, nil, nil, err
 	}
 
-	progress, err := ec.syncProgress(ctx)
-	if err != nil {
-		return nil, -1, nil, nil, err
-	}
+	// progress, err := ec.syncProgress(ctx)
+	// if err != nil {
+	// 	return nil, -1, nil, nil, err
+	// }
 
-	var syncStatus *RosettaTypes.SyncStatus
-	if progress != nil {
-		currentIndex := int64(progress.CurrentBlock)
-		targetIndex := int64(progress.HighestBlock)
+	// var syncStatus *RosettaTypes.SyncStatus
+	// if progress != nil {
+	// 	currentIndex := int64(progress.CurrentBlock)
+	// 	targetIndex := int64(progress.HighestBlock)
 
-		syncStatus = &RosettaTypes.SyncStatus{
-			CurrentIndex: &currentIndex,
-			TargetIndex:  &targetIndex,
-		}
-	}
+	// 	syncStatus = &RosettaTypes.SyncStatus{
+	// 		CurrentIndex: &currentIndex,
+	// 		TargetIndex:  &targetIndex,
+	// 	}
+	// }
 
 	peers, err := ec.peers(ctx)
 	if err != nil {
@@ -136,7 +135,7 @@ func (ec *Client) Status(ctx context.Context) (
 			Index: int64(workObject.NumberU64(common.ZONE_CTX)),
 		},
 		convertTime(workObject.WorkObjectHeader().Time()),
-		syncStatus,
+		nil,
 		peers,
 		nil
 }
@@ -224,7 +223,7 @@ func (ec *Client) Transaction(
 	if err != nil {
 		return nil, fmt.Errorf("%w: transaction fetch failed", err)
 	} else if len(raw) == 0 {
-		return nil, ethereum.NotFound
+		return nil, errNotFound
 	}
 
 	// Decode transaction
@@ -339,7 +338,7 @@ func (ec *Client) blockHeaderByHash(ctx context.Context, hash string) (*types.Wo
 	}
 	err := ec.c.CallContext(ctx, &workObject, "quai_getBlockByHash", hash, false)
 	if err == nil && workObject == nil {
-		return nil, ethereum.NotFound
+		return nil, errNotFound
 	}
 
 	return workObject, err
@@ -955,7 +954,7 @@ func (ec *Client) transactionReceipt(
 	err := ec.c.CallContext(ctx, &r, "quai_getTransactionReceipt", txHash)
 	if err == nil {
 		if r == nil {
-			return nil, ethereum.NotFound
+			return nil, errNotFound
 		}
 	}
 
@@ -978,7 +977,7 @@ func (ec *Client) blockByNumber(
 	err := ec.c.CallContext(ctx, &r, "quai_getBlockByNumber", blockIndex, showTxDetails)
 	if err == nil {
 		if r == nil {
-			return nil, ethereum.NotFound
+			return nil, errNotFound
 		}
 	}
 
@@ -1302,32 +1301,32 @@ type rpcProgress struct {
 	KnownStates   hexutil.Uint64
 }
 
-// syncProgress retrieves the current progress of the sync algorithm. If there's
-// no sync currently running, it returns nil.
-func (ec *Client) syncProgress(ctx context.Context) (*ethereum.SyncProgress, error) {
-	var raw json.RawMessage
-	if err := ec.c.CallContext(ctx, &raw, "quai_syncing"); err != nil {
-		return nil, err
-	}
+// // syncProgress retrieves the current progress of the sync algorithm. If there's
+// // no sync currently running, it returns nil.
+// func (ec *Client) syncProgress(ctx context.Context) (*ethereum.SyncProgress, error) {
+// 	var raw json.RawMessage
+// 	if err := ec.c.CallContext(ctx, &raw, "quai_syncing"); err != nil {
+// 		return nil, err
+// 	}
 
-	var syncing bool
-	if err := json.Unmarshal(raw, &syncing); err == nil {
-		return nil, nil // Not syncing (always false)
-	}
+// 	var syncing bool
+// 	if err := json.Unmarshal(raw, &syncing); err == nil {
+// 		return nil, nil // Not syncing (always false)
+// 	}
 
-	var progress rpcProgress
-	if err := json.Unmarshal(raw, &progress); err != nil {
-		return nil, err
-	}
+// 	var progress rpcProgress
+// 	if err := json.Unmarshal(raw, &progress); err != nil {
+// 		return nil, err
+// 	}
 
-	return &ethereum.SyncProgress{
-		StartingBlock: uint64(progress.StartingBlock),
-		CurrentBlock:  uint64(progress.CurrentBlock),
-		HighestBlock:  uint64(progress.HighestBlock),
-		PulledStates:  uint64(progress.PulledStates),
-		KnownStates:   uint64(progress.KnownStates),
-	}, nil
-}
+// 	return &ethereum.SyncProgress{
+// 		StartingBlock: uint64(progress.StartingBlock),
+// 		CurrentBlock:  uint64(progress.CurrentBlock),
+// 		HighestBlock:  uint64(progress.HighestBlock),
+// 		PulledStates:  uint64(progress.PulledStates),
+// 		KnownStates:   uint64(progress.KnownStates),
+// 	}, nil
+// }
 
 type graphqlBalance struct {
 	Errors []struct {

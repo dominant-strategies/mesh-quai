@@ -26,7 +26,6 @@ import (
 	"testing"
 
 	mocks "github.com/dominant-strategies/mesh-quai/mocks/ethereum"
-	"github.com/ethereum/go-ethereum"
 
 	RosettaTypes "github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/dominant-strategies/go-quai/common"
@@ -67,7 +66,7 @@ func TestStatus_NotReady(t *testing.T) {
 	assert.Equal(t, int64(-1), timestamp)
 	assert.Nil(t, syncStatus)
 	assert.Nil(t, peers)
-	assert.True(t, errors.Is(err, ethereum.NotFound))
+	assert.True(t, errors.Is(err, errNotFound))
 
 	mockJSONRPC.AssertExpectations(t)
 	mockGraphQL.AssertExpectations(t)
