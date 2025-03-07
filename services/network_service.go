@@ -20,7 +20,7 @@ import (
 	"github.com/dominant-strategies/mesh-quai/configuration"
 	"github.com/dominant-strategies/mesh-quai/quai"
 
-	"github.com/coinbase/rosetta-sdk-go/types"
+	"github.com/dominant-strategies/mesh-sdk-go/types"
 )
 
 // NetworkAPIService implements the server.NetworkAPIServicer interface.

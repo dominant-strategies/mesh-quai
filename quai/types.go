@@ -17,9 +17,9 @@ package quai
 import (
 	"context"
 
-	"github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/dominant-strategies/go-quai/params"
 	"github.com/dominant-strategies/go-quai/rpc"
+	"github.com/dominant-strategies/mesh-sdk-go/types"
 )
 
 const (

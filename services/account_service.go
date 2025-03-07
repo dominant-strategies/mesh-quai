@@ -19,7 +19,7 @@ import (
 
 	"github.com/dominant-strategies/mesh-quai/configuration"
 
-	"github.com/coinbase/rosetta-sdk-go/types"
+	"github.com/dominant-strategies/mesh-sdk-go/types"
 )
 
 // AccountAPIService implements the server.AccountAPIServicer interface.

@@ -25,9 +25,9 @@ import (
 	mocks "github.com/dominant-strategies/mesh-quai/mocks/services"
 	"github.com/dominant-strategies/mesh-quai/quai"
 
-	"github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/dominant-strategies/go-quai/common"
 	"github.com/dominant-strategies/go-quai/params"
+	"github.com/dominant-strategies/mesh-sdk-go/types"
 	"github.com/stretchr/testify/assert"
 )
 

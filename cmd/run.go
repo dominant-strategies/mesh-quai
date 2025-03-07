@@ -27,9 +27,9 @@ import (
 	"github.com/dominant-strategies/mesh-quai/quai"
 	"github.com/dominant-strategies/mesh-quai/services"
 
-	"github.com/coinbase/rosetta-sdk-go/asserter"
-	"github.com/coinbase/rosetta-sdk-go/server"
-	"github.com/coinbase/rosetta-sdk-go/types"
+	"github.com/dominant-strategies/mesh-sdk-go/asserter"
+	"github.com/dominant-strategies/mesh-sdk-go/server"
+	"github.com/dominant-strategies/mesh-sdk-go/types"
 	"github.com/spf13/cobra"
 	"golang.org/x/sync/errgroup"
 )

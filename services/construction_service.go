@@ -26,8 +26,8 @@ import (
 	ethTypes "github.com/dominant-strategies/go-quai/core/types"
 	"github.com/dominant-strategies/go-quai/crypto"
 
-	"github.com/coinbase/rosetta-sdk-go/parser"
-	"github.com/coinbase/rosetta-sdk-go/types"
+	"github.com/dominant-strategies/mesh-sdk-go/parser"
+	"github.com/dominant-strategies/mesh-sdk-go/types"
 )
 
 // ConstructionAPIService implements the server.ConstructionAPIServicer interface.

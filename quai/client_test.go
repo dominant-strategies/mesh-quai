@@ -27,13 +27,13 @@ import (
 
 	mocks "github.com/dominant-strategies/mesh-quai/mocks/ethereum"
 
-	RosettaTypes "github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/dominant-strategies/go-quai/common"
 	"github.com/dominant-strategies/go-quai/common/hexutil"
 	"github.com/dominant-strategies/go-quai/core/types"
 	"github.com/dominant-strategies/go-quai/p2p"
 	"github.com/dominant-strategies/go-quai/params"
 	"github.com/dominant-strategies/go-quai/rpc"
+	RosettaTypes "github.com/dominant-strategies/mesh-sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"golang.org/x/sync/semaphore"

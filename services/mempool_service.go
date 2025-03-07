@@ -17,9 +17,9 @@ package services
 import (
 	"context"
 
-	"github.com/coinbase/rosetta-sdk-go/server"
-	"github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/dominant-strategies/mesh-quai/configuration"
+	"github.com/dominant-strategies/mesh-sdk-go/server"
+	"github.com/dominant-strategies/mesh-sdk-go/types"
 )
 
 // MempoolAPIService implements the server.MempoolAPIServicer interface.

@@ -25,13 +25,13 @@ import (
 	"strconv"
 	"time"
 
-	RosettaTypes "github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/dominant-strategies/go-quai/common"
 	"github.com/dominant-strategies/go-quai/common/hexutil"
 	"github.com/dominant-strategies/go-quai/core/types"
 	"github.com/dominant-strategies/go-quai/params"
 	"github.com/dominant-strategies/go-quai/rlp"
 	"github.com/dominant-strategies/go-quai/rpc"
+	RosettaTypes "github.com/dominant-strategies/mesh-sdk-go/types"
 	"github.com/libp2p/go-libp2p/core/peer"
 	"golang.org/x/sync/semaphore"
 )

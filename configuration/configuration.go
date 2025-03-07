@@ -20,9 +20,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/dominant-strategies/go-quai/params"
 	"github.com/dominant-strategies/mesh-quai/quai"
+	"github.com/dominant-strategies/mesh-sdk-go/types"
 )
 
 // Mode is the setting that determines if
